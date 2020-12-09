@@ -6,6 +6,7 @@
 #include "Pieces/Rook.hpp"
 #include "Pieces/Queen.hpp"
 #include "Pieces/King.hpp"
+#include <iostream>
 
 enum Result {white_wins, black_wins, stalemate};
 
@@ -13,28 +14,30 @@ class ChessBoard {
 
     private:
 
-    bool game_over;
+        bool game_over;
 
-    Colour player_turn;
+        Colour player_turn;
 
-    Result result;
-    
-    Piece* board[8][8];
+        Result result;
+        
+        Piece* board[8][8];
 
-    void configureBoard();
+        void configureBoard();
 
-    bool checkInput(const char* start_position, const char* end_position);
+        bool checkInput(const char* start_position, const char* end_position);
 
-    void clearBoard();
+        void clearBoard();
 
     public:
     
-    ChessBoard();
+        ChessBoard();
 
-    ~ChessBoard();
+        ~ChessBoard();
 
-    void submitMove(const char* start_position, const char* end_position);
+        void submitMove(const char* start_position, const char* end_position);
 
-    void resetBoard();
+        void resetBoard();
+
+        void displayBoard();
 
 };

@@ -7,12 +7,15 @@ Pawn::Pawn(Colour colour) : Piece(colour) {
 
 int Pawn::validPieceMovement(const char* start_position, const char* end_position, Piece* board[][8]) const {
     if (!onVerticalAdjacent(start_position, end_position))
-        return false;
+        return INVALID_MOVEMENT;
     
     if (!validLineOfSight(start_position, end_position, board))
-        return false;
+        return NO_LINE_OF_SIGHT;
+    
+    return NO_ERROR;
 }
 
 bool Pawn::onVerticalAdjacent(const char* start_position, const char* end_position) const {
-
+    // check moves
+    return true;    
 }

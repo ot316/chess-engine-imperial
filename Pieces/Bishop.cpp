@@ -7,8 +7,10 @@ Bishop::Bishop(Colour colour) : Piece(colour) {
 
 int Bishop::validPieceMovement(const char* start_position, const char* end_position, Piece* board[][8]) const {
     if (!onDiagonal(start_position, end_position))
-        return false;
+        return INVALID_MOVEMENT;
     
     if (!validLineOfSight(start_position, end_position, board))
-        return false;
+        return NO_LINE_OF_SIGHT;
+    
+    return NO_ERROR;
 }

@@ -1,6 +1,7 @@
 #include "ChessBoard.h"
 
 ChessBoard::ChessBoard() {
+    std::cout << "A new chess game is started!\n";
     configureBoard();
 }
 
@@ -29,36 +30,44 @@ void ChessBoard::submitMove(const char* start_position, const char* end_position
     const auto rank = start_position[1] - '1';
 
     int error_code = board[file][rank]->isValidMove(start_position, end_position, board, player_turn);
-    if (error_code == WRONG_TURN) {
-        cerr << "Cannot move piece, it's not " << show_colour[board[file][rank]->getColour()];
-        cerr << "'s turn.\n";
-        return;
-    }
-    if (error_code == OCCUPIED_SQUARE) {
-        cerr << end_position << " is occupied by a friendly piece.\n";
-        return;
-    }
-    if (error_code == INVALID_MOVEMENT) {
-        cerr << show_colour[board[file][rank]->getColour()];
-        cerr << "'s " << show_type[board[file][rank]->getType()];
-        cerr <<" cannot move to " << end_position << ".\n";
-        return;
-    }
-    if (error_code == NO_LINE_OF_SIGHT) {
-        cerr << show_colour[board[file][rank]->getColour()];
-        cerr << "'s " << show_type[board[file][rank]->getType()];
-        cerr <<" cannot move to " << end_position << " as there is a piece in the way.\n";
+
+    switch (error_code) {
+        case WRONG_TURN :
+            cerr << "Cannot move piece, it's not " << print_colour[board[file][rank]->getColour()];
+            cerr << "'s turn.\n";
+            return;
+        case OCCUPIED_SQUARE :
+            cerr << end_position << " is occupied by a friendly piece.\n";
+            return;
+        case INVALID_MOVEMENT :
+            cerr << print_colour[board[file][rank]->getColour()];
+            cerr << "'s " << print_type[board[file][rank]->getType()];
+            cerr <<" cannot move from " << start_position << " to ";
+            cerr << end_position << ".\n";
+            return;
+        case NO_LINE_OF_SIGHT :
+            cerr << print_colour[board[file][rank]->getColour()];
+            cerr << "'s " << print_type[board[file][rank]->getType()];
+            cerr <<" cannot move from " << start_position << " to ";
+            cerr << end_position << " as there is a piece in the way.\n";
+            return;
+        }
+
+    if (movingIntoCheck(start_position, end_position) == MOVING_INTO_CHECK) {
+        cerr << "This move would expose " << print_colour[board[file][rank]->getColour()];
+        cerr << "'s King to check.\n";
         return;
 
     }
-    // check if moving into check
-    if (error_code == MOVING_INTO_CHECK) {
-        return;
+    // actually move piece
+    this->outcome = checkGameOutcome();
+    toggle(player_turn);
+}
 
-    }
-    
-
-
+int ChessBoard::movingIntoCheck(const char* start_position, const char* end_position) const {
+    // if (int error = 0)
+    //     return MOVING_INTO_CHECK;
+    return NO_ERROR;
 
 }
 
@@ -91,7 +100,7 @@ void ChessBoard::configureBoard() {
 
         team_identifier = black;
     }
-    displayBoard();
+    //displayBoard();
 
 }
 
@@ -137,8 +146,8 @@ void ChessBoard::displayBoard() const {
                 cout << "   Empty    \t|\t";
             else {
                 Piece* piece = board[file][rank];
-                cout << show_colour[piece->getColour()] << " ";
-                cout << show_type[piece->getType()] << "\t|\t";
+                cout << print_colour[piece->getColour()] << " ";
+                cout << print_type[piece->getType()] << "\t|\t";
             }
         }
         cout << "\n\n";
@@ -155,4 +164,16 @@ void ChessBoard::clearBoard() {
                 delete board[file][rank];
         }
     }
+}
+
+void ChessBoard::toggle(Colour& player_turn) {
+    if (player_turn == white)
+        player_turn = black;
+    else
+        player_turn = white;
+}
+
+Outcome ChessBoard::checkGameOutcome() {
+    // if checkmate return etc
+    return in_play;
 }

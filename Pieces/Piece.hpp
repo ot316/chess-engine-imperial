@@ -3,10 +3,10 @@
 #include <cstring>
 
 enum Colour {white, black};
-const char show_colour[][6] = {"White", "Black"};
+const char print_colour[][6] = {"White", "Black"};
 
 enum Type {null, pawn, knight, bishop, rook, queen, king};
-const char show_type[][7] = {"Error", "Pawn", "Knight", "Bishop", "Rook", "Queen", "King"};
+const char print_type[][7] = {"Error", "Pawn", "Knight", "Bishop", "Rook", "Queen", "King"};
 
 class Piece {
 
@@ -16,9 +16,9 @@ class Piece {
 
         Type type = null;
 
-        virtual int validPieceMovement(const char* start_position, const char* end_position, Piece* board[][8]) const {return 0;};
+        virtual int validPieceMovement(const char* start_position, const char* end_position, Piece* board[][8]) const {return NO_ERROR;};
 
-        virtual bool validLineOfSight(const char* start_position, const char* end_position, Piece* board[][8]) const {return 0;};
+        virtual bool validLineOfSight(const char* start_position, const char* end_position, Piece* board[][8]) const {return true;};
 
         bool onDiagonal(const char* start_position, const char* end_position) const;
 
@@ -29,6 +29,8 @@ class Piece {
     public:
 
         Piece(Colour colour);
+
+        ~Piece();
 
         int isValidMove(const char* starting_position, const char* end_position, Piece* board[][8], Colour player_turn) const;
 

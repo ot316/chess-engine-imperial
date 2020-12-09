@@ -16,7 +16,7 @@ class ChessBoard {
 
         bool game_over;
 
-        Colour player_turn;
+        Colour player_turn = white;
 
         Outcome outcome;
         
@@ -27,6 +27,13 @@ class ChessBoard {
 
         // Helper function to check the start and end coordinates are valid.
         bool checkInput(const char* start_position, const char* end_position);
+
+        // Helper function to ensure a move does not place the king in check.
+        int movingIntoCheck(const char* start_position, const char* end_position) const;
+
+        void toggle(Colour& player_turn);
+
+        Outcome checkGameOutcome();
 
         void clearBoard();
 

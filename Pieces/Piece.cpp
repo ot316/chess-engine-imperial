@@ -2,6 +2,8 @@
 
 Piece::Piece(Colour colour) : colour(colour) {}
 
+Piece::~Piece(){}
+
 const Colour Piece::getColour() const {
     return colour;
 }
@@ -30,18 +32,20 @@ int Piece::isValidMove(const char* starting_position, const char* end_position, 
     if (error_code)
         return error_code;
 
-    return true;
+    return NO_ERROR;
 }
 
 // Shared movement primitive validator functions
 bool Piece::onDiagonal(const char* starting_position, const char* end_position) const {
-
+    return true;
 }
+
 
 bool Piece::onLine(const char* starting_position, const char* end_position) const {
-
+    return true;
 }
 
-bool Piece::ajdacent(const char* starting_position, const char* end_position) const {
 
+bool Piece::ajdacent(const char* starting_position, const char* end_position) const {
+    return true;
 }

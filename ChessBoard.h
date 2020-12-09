@@ -8,7 +8,7 @@
 #include "Pieces/King.hpp"
 #include <iostream>
 
-enum Result {white_wins, black_wins, stalemate};
+enum Outcome {in_play, white_wins, black_wins, stalemate};
 
 class ChessBoard {
 
@@ -18,12 +18,14 @@ class ChessBoard {
 
         Colour player_turn;
 
-        Result result;
+        Outcome outcome;
         
         Piece* board[8][8];
 
+        // Sets up the chess board ready for a new game.
         void configureBoard();
 
+        // Helper function to check the start and end coordinates are valid.
         bool checkInput(const char* start_position, const char* end_position);
 
         void clearBoard();
@@ -34,10 +36,13 @@ class ChessBoard {
 
         ~ChessBoard();
 
+        // Moves a piece from the start position to the end position.
         void submitMove(const char* start_position, const char* end_position);
 
+        // Discards the current game and resets the board.
         void resetBoard();
-
-        void displayBoard();
+        
+        // Displays an Ascii chessboard representing the games current state.
+        void displayBoard() const;
 
 };

@@ -1,0 +1,5 @@
+#define WRONG_TURN 0
+#define OCCUPIED_SQUARE 1
+#define INVALID_MOVEMENT 2
+#define NO_LINE_OF_SIGHT 3
+#define MOVING_INTO_CHECK 4

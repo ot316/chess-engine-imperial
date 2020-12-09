@@ -1,8 +1,9 @@
 #pragma once
-#include<cstring>
+#include "../errors.hpp"
+#include <cstring>
 
 enum Colour {white, black};
-const char show_colours[][6] = {"White", "Black"};
+const char show_colour[][6] = {"White", "Black"};
 
 enum Type {null, pawn, knight, bishop, rook, queen, king};
 const char show_type[][7] = {"Error", "Pawn", "Knight", "Bishop", "Rook", "Queen", "King"};
@@ -15,21 +16,21 @@ class Piece {
 
         Type type = null;
 
-        bool isValidMove(const char* starting_position, const char* end_position, Piece* board[][8], Colour player_turn) const;
-
-        virtual bool validPieceMovement(const char* start_position, const char* end_position, Piece* board[][8]) const {return 0;};
+        virtual int validPieceMovement(const char* start_position, const char* end_position, Piece* board[][8]) const {return 0;};
 
         virtual bool validLineOfSight(const char* start_position, const char* end_position, Piece* board[][8]) const {return 0;};
 
-        bool onDiagonal(const char* start_position, const char* end_position, Piece* board[][8]) const;
+        bool onDiagonal(const char* start_position, const char* end_position) const;
 
-        bool onLine(const char* start_position, const char* end_position, Piece* board[][8]) const;
+        bool onLine(const char* start_position, const char* end_position) const;
 
-        bool ajdacent(const char* start_position, const char* end_position, Piece* board[][8]) const;
+        bool ajdacent(const char* start_position, const char* end_position) const;
 
     public:
 
         Piece(Colour colour);
+
+        int isValidMove(const char* starting_position, const char* end_position, Piece* board[][8], Colour player_turn) const;
 
         const Colour getColour() const;
 

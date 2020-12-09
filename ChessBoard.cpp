@@ -14,16 +14,51 @@ void ChessBoard::resetBoard() {
 }
 
 void ChessBoard::submitMove(const char* start_position, const char* end_position) {
+    using std::cerr;
+
     if(!checkInput(start_position, end_position)) {
         return;
     }
 
     if(this->outcome != in_play) {
-        std::cerr << "the current game has ended, please reset the board.\n";
+        cerr << "The current game has ended, please reset the board.\n";
         return;
     }
 
+    const auto file = start_position[0] - 'A';
+    const auto rank = start_position[1] - '1';
+
+    int error_code = board[file][rank]->isValidMove(start_position, end_position, board, player_turn);
+    if (error_code == WRONG_TURN) {
+        cerr << "Cannot move piece, it's not " << show_colour[board[file][rank]->getColour()];
+        cerr << "'s turn.\n";
+        return;
+    }
+    if (error_code == OCCUPIED_SQUARE) {
+        cerr << end_position << " is occupied by a friendly piece.\n";
+        return;
+    }
+    if (error_code == INVALID_MOVEMENT) {
+        cerr << show_colour[board[file][rank]->getColour()];
+        cerr << "'s " << show_type[board[file][rank]->getType()];
+        cerr <<" cannot move to " << end_position << ".\n";
+        return;
+    }
+    if (error_code == NO_LINE_OF_SIGHT) {
+        cerr << show_colour[board[file][rank]->getColour()];
+        cerr << "'s " << show_type[board[file][rank]->getType()];
+        cerr <<" cannot move to " << end_position << " as there is a piece in the way.\n";
+        return;
+
+    }
+    // check if moving into check
+    if (error_code == MOVING_INTO_CHECK) {
+        return;
+
+    }
     
+
+
 
 }
 
@@ -35,6 +70,7 @@ void ChessBoard::configureBoard() {
         }
     }
 
+    // Create pieces on heap
     Colour team_identifier = white;
 
     for (auto i = 0u; i < 8; i += 7) {
@@ -60,6 +96,7 @@ void ChessBoard::configureBoard() {
 }
 
 bool ChessBoard::checkInput(const char* start_position, const char* end_position) {
+    // Check Coordinates are within range
     using std::cerr;
     if (strlen(start_position) != 2 ||
             start_position[0] < 'A' ||
@@ -77,7 +114,9 @@ bool ChessBoard::checkInput(const char* start_position, const char* end_position
             cerr << end_position << "is in an invalid end coordinate.\n";
             return false;
     }
-    if (board[start_position[0] - 'A'][start_position[1] - '1'] == nullptr) {
+    const auto file = start_position[0] - 'A';
+    const auto rank = start_position[1] - '1';
+    if (board[file][rank] == nullptr) {
         cerr << "The starting position " << start_position << " does not contain a piece.\n";
         return false;
     }
@@ -98,7 +137,7 @@ void ChessBoard::displayBoard() const {
                 cout << "   Empty    \t|\t";
             else {
                 Piece* piece = board[file][rank];
-                cout << show_colours[piece->getColour()] << " ";
+                cout << show_colour[piece->getColour()] << " ";
                 cout << show_type[piece->getType()] << "\t|\t";
             }
         }

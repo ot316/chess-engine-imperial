@@ -42,13 +42,14 @@ void ChessBoard::configureBoard() {
             board[index][file] = new Pawn(team_identifier);
         }
 
-        team_identifier != team_identifier;
+        team_identifier = black;
     }
 
 }
 
 bool ChessBoard::checkInput(const char* start_position, const char* end_position) {
     // check inputs
+    return true;
 }
 
 void ChessBoard::clearBoard() {

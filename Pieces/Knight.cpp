@@ -1,4 +1,3 @@
-# pragma once
 #include "Piece.hpp"
 #include "Knight.hpp"
 

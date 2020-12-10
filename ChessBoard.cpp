@@ -1,7 +1,6 @@
 #include "ChessBoard.h"
 
 ChessBoard::ChessBoard() {
-    std::cout << "A new chess game is started!\n";
     configureBoard();
 }
 
@@ -16,6 +15,7 @@ void ChessBoard::resetBoard() {
 
 void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     using std::cerr;
+    using std::cout;
 
     if(!checkInput(start_pos, end_pos)) {
         return;
@@ -67,12 +67,26 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     const auto end_x = end_pos[0] - 'A';
     const auto end_y = end_pos[1] - '1';
 
-    if (board[end_x][end_y] != nullptr)
+    cout << print_colour[board[file][rank]->getColour()];
+    cout << "'s " << print_type[board[file][rank]->getType()];
+    cout << " moves from " << start_pos << " to " << end_pos;
+
+    board[start_x][start_y]->hasMoved();
+
+    if (board[end_x][end_y] != nullptr) {
+        cout << " taking ";
+        cout << print_colour[board[end_x][end_y]->getColour()];
+        cout << "'s " << print_type[board[end_x][end_y]->getType()];
+        cout << std::endl;
         delete board[end_x][end_y];
+    }
+    else
+        cout << ".\n";
     
     board[end_x][end_y] = board[start_x][start_y];
     board[start_x][start_y] = nullptr;
 
+    displayBoard();
     outcome = checkGameOutcome();
     toggle(player_turn);
 }
@@ -93,30 +107,24 @@ bool ChessBoard::movingIntoCheck(const char* start_pos, const char* end_pos) {
     for (auto file = 0u; file < 8; ++file) {
         for (auto rank = 0u; rank < 8; ++rank) {
             if (board[file][rank] != nullptr) {
-                if (board[file][rank]->isValidMove(start_pos, king_position[player_turn], board, player_turn)) {
+                if (!board[file][rank]->isValidMove(start_pos, king_position[player_turn], board, player_turn)) {
                     // If the king is in check, undo the move and return error.
                     board[start_x][start_y] = board[end_x][end_y];
                     board[end_x][end_y] = ptr_holder;
-                    board[start_x][start_y]->retractMove(); // Reduces pawn movement count, does not affect other pieces.
-                    board[file][rank]->retractMove();
                     return MOVING_INTO_CHECK;
                 }
             }
         }
     }
     // Undo the move and return no error.
-    cout << print_colour[board[start_x][start_y]->getColour()];
-    cout << "'s " << print_type[board[start_x][start_y]->getType()];
-    cout << " moves from " << start_pos << " to ";
-    cout << end_pos << ".\n";
-
     board[start_x][start_y] = board[end_x][end_y];
     board[end_x][end_y] = ptr_holder;
-    board[start_x][start_y]->retractMove();
     return NO_ERROR;
 }
 
 void ChessBoard::configureBoard() {
+    std::cout << "A new chess game is started!\n";
+
     // Initilise board pointers to nullptr
     for (auto rank = 2u; rank < 6; ++rank) {
         for (auto file = 0u; file < 8; ++file) {

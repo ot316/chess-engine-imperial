@@ -35,9 +35,6 @@ int Piece::isValidMove(const char* start_pos, const char* end_pos, Piece* board[
     return NO_ERROR;
 }
 
-bool Piece::validLineOfSight(const char* start_pos, const char* end_pos, Piece* board[][8]) const {
-    return true;
-}
 
 // Shared movement primitive validator functions
 bool Piece::onDiagonal(const char* start_pos, const char* end_pos) const {

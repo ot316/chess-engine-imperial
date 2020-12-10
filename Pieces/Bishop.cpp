@@ -14,3 +14,25 @@ int Bishop::validPieceMovement(const char* start_pos, const char* end_pos, Piece
     
     return NO_ERROR;
 }
+
+bool Bishop::validLineOfSight(const char* start_pos, const char* end_pos, Piece* board[][8]) const {
+    auto start_x = start_pos[0] - 'A';
+    auto start_y = start_pos[1] - '1';
+    auto end_x = end_pos[0] - 'A';
+    auto end_y = end_pos[1] - '1';
+    auto delta_x = start_x - end_x;
+    auto delta_y = start_y - end_y;
+	
+	auto multiplier = ((delta_x < 0 && delta_y < 0) || (delta_x > 0 && delta_y > 0) ? 1 : -1);
+
+	if (delta_x < 0) 
+		for (auto i = -1; i != delta_x; --i)
+			if (board[start_x + i][start_y + (i * multiplier)] != nullptr)
+				return false;	
+
+	if (delta_x > 0)
+    	for (auto i = 1; i != delta_x; ++i)
+			if (board[start_x + i][start_y + (i * multiplier)] != nullptr)
+				return false;	
+	return true; 
+}

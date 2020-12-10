@@ -20,12 +20,18 @@ bool Pawn::onVerticalAdjacent(const char* start_pos, const char* end_pos) const 
     if (start_pos[0] != end_pos[0])
         return false;
 
-    auto delta_y = abs((start_pos[1] - '1') - (end_pos[1] - '1'));
+    auto delta_y = (end_pos[1] - '1') - (start_pos[1] - '1');
 
+    // Reverse permitted direction depending on colour.
+    if (this->getColour() == white)
+        delta_y = delta_y * -1;
+
+    // Allow the pawn to move 2 squares forwards only if it is on its first move.
     if (move == 0) {
         if ((delta_y == 1) || (delta_y == 2)) 
             return true;      
     }
+    // Allow single square movement otherwise.
     else {
         if (delta_y == 1)
             return true;

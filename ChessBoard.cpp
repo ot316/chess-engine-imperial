@@ -97,7 +97,8 @@ bool ChessBoard::movingIntoCheck(const char* start_pos, const char* end_pos) {
                     // If the king is in check, undo the move and return error.
                     board[start_x][start_y] = board[end_x][end_y];
                     board[end_x][end_y] = ptr_holder;
-                    board[start_x][start_y]->retractMove();
+                    board[start_x][start_y]->retractMove(); // Reduces pawn movement count, does not affect other pieces.
+                    board[file][rank]->retractMove();
                     return MOVING_INTO_CHECK;
                 }
             }

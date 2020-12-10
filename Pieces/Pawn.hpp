@@ -4,14 +4,15 @@ class Pawn : public Piece {
     
     private:
 
-        int moves = 0;
+        mutable unsigned int move = 0;
 
-        int validPieceMovement(const char* start_position, const char* end_position, Piece* board[][8]) const;
+        int validPieceMovement(const char* start_pos, const char* end_pos, Piece* board[][8]) const;
 
-        bool onVerticalAdjacent(const char* start_position, const char* end_position) const;
+        bool onVerticalAdjacent(const char* start_pos, const char* end_pos) const;
 
     public:
 
     Pawn(Colour colour);
-    //move 
+
+    void retractMove() const; 
 };

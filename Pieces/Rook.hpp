@@ -4,7 +4,7 @@ class Rook : public Piece {
 
     private:
 
-        int validPieceMovement(const char* sart_position, const char* end_position, Piece* board[][8]) const;
+        int validPieceMovement(const char* sart_position, const char* end_pos, Piece* board[][8]) const;
         
     public:
 

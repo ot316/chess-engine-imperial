@@ -5,13 +5,13 @@ Knight::Knight(Colour colour) : Piece(colour) {
     type = knight;
 }
 
-int Knight::validPieceMovement(const char* start_position, const char* end_position, Piece* board[][8]) const {
-    if (!onLShape(start_position, end_position))
+int Knight::validPieceMovement(const char* start_pos, const char* end_pos, Piece* board[][8]) const {
+    if (!onLShape(start_pos, end_pos))
         return INVALID_MOVEMENT;
 
     return NO_ERROR;
 }
 
-bool Knight::onLShape(const char* start_position, const char* end_position) const {
+bool Knight::onLShape(const char* start_pos, const char* end_pos) const {
     return true;    
 }

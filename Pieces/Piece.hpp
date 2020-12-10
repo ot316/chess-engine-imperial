@@ -1,6 +1,7 @@
 #pragma once
 #include "../errors.hpp"
 #include <cstring>
+#include <cmath>
 
 enum Colour {white, black};
 const char print_colour[][6] = {"White", "Black"};
@@ -16,23 +17,25 @@ class Piece {
 
         Type type = null;
 
-        virtual int validPieceMovement(const char* start_position, const char* end_position, Piece* board[][8]) const {return NO_ERROR;};
+        virtual int validPieceMovement(const char* start_pos, const char* end_pos, Piece* board[][8]) const {return NO_ERROR;};
 
-        virtual bool validLineOfSight(const char* start_position, const char* end_position, Piece* board[][8]) const {return true;};
+        bool validLineOfSight(const char* start_pos, const char* end_pos, Piece* board[][8]) const;
 
-        bool onDiagonal(const char* start_position, const char* end_position) const;
+        bool onDiagonal(const char* start_pos, const char* end_pos) const;
 
-        bool onLine(const char* start_position, const char* end_position) const;
+        bool onLine(const char* start_pos, const char* end_pos) const;
 
-        bool ajdacent(const char* start_position, const char* end_position) const;
+        bool ajdacentTo(const char* start_pos, const char* end_pos) const;
 
     public:
 
         Piece(Colour colour);
 
-        ~Piece();
+        virtual ~Piece();
 
-        int isValidMove(const char* starting_position, const char* end_position, Piece* board[][8], Colour player_turn) const;
+        int isValidMove(const char* start_pos, const char* end_pos, Piece* board[][8], Colour player_turn) const;
+
+        virtual void retractMove() const {return;};
 
         const Colour getColour() const;
 

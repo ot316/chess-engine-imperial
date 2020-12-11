@@ -52,7 +52,7 @@ class ChessBoard {
         // Discards the current game and resets the board.
         void resetBoard();
         
-        // Displays an Ascii chessboard representing the games current state.
+        // Displays an Ascii chessboard showing the game's current state.
         void displayBoard() const;
 
 };

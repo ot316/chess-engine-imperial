@@ -37,13 +37,49 @@ int main() {
 	cb.submitMove("A5", "A4");
 	cout << '\n';	
 
-	cb.submitMove("E6", "E7");
+	cb.submitMove("G2", "G3");
 	cout << '\n';
 
 	cb.submitMove("A4", "A3");
 	cout << '\n';	
 
-	cb.submitMove("E7", "F8");
+	cb.submitMove("C1", "H6");
+	cout << '\n';
+
+	cb.submitMove("G7", "G6");
+	cout << '\n';
+
+	cb.submitMove("F1", "H3");
+	cout << '\n';
+
+	cb.submitMove("A8", "A6");
+	cout << '\n';
+
+	cb.submitMove("B2", "A3");
+	cout << '\n';
+
+	cb.submitMove("A6", "E6");
+	cout << '\n';
+
+	cb.submitMove("H3", "F5");
+	cout << '\n';
+
+	cb.submitMove("E6", "D6");
+	cout << '\n';
+
+	cb.submitMove("F5", "D3");
+	cout << '\n';
+
+	cb.submitMove("B7", "B5");
+	cout << '\n';
+
+	cb.submitMove("E1", "B4");
+	cout << '\n';
+
+	cb.submitMove("E8", "E2");
+	cout << '\n';
+
+	cb.submitMove("B4", "D6");
 	cout << '\n';
 	return 0;
 

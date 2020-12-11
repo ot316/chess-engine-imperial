@@ -13,5 +13,5 @@ int Knight::validPieceMovement(const char* start_pos, const char* end_pos, Piece
 }
 
 bool Knight::onLShape(const char* start_pos, const char* end_pos) const {
-    return true;    
+    return false;    
 }

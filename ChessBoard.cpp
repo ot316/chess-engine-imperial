@@ -38,6 +38,10 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
             cerr << "Cannot move piece, it's not " << print_colour[board[file][rank]->getColour()];
             cerr << "'s turn.\n";
             return;
+        case SAME_START_AND_END_SQUARE :
+            cerr << "The start square " << start_pos; 
+            cerr << " is the same as the end square " << end_pos << ".\n";
+            return;
         case OCCUPIED_SQUARE :
             cerr << end_pos << " is occupied by a friendly piece.\n";
             return;
@@ -56,7 +60,10 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
         }
 
     if (movingIntoCheck(start_pos, end_pos) == MOVING_INTO_CHECK) {
-        cerr << "This move would expose " << print_colour[board[file][rank]->getColour()];
+        cerr << "Moving " << print_colour[board[file][rank]->getColour()];
+        cerr << "'s " << print_type[board[file][rank]->getType()];
+        cerr << " from " << start_pos << " to " << end_pos;
+        cerr << " would expose " << print_colour[board[file][rank]->getColour()];
         cerr << "'s King to check.\n";
         return;
 
@@ -77,7 +84,7 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
         cout << " taking ";
         cout << print_colour[board[end_x][end_y]->getColour()];
         cout << "'s " << print_type[board[end_x][end_y]->getType()];
-        cout << std::endl;
+        cout << ".\n";
         delete board[end_x][end_y];
     }
     else
@@ -93,22 +100,30 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
 
 bool ChessBoard::movingIntoCheck(const char* start_pos, const char* end_pos) {
     using std::cout;
-    // Temprarily move piece
     const auto start_x = start_pos[0] - 'A';
     const auto start_y = start_pos[1] - '1';
     const auto end_x = end_pos[0] - 'A';
     const auto end_y = end_pos[1] - '1';
 
+    // Temprarily move piece
     Piece* ptr_holder = board[end_x][end_y];
     board[end_x][end_y] = board[start_x][start_y];
     board[start_x][start_y] = nullptr;
+
+    char test_pos[2];
+    Colour opposite_player_turn = player_turn;
+    toggle(opposite_player_turn);
 
     // Check if any piece can make a valid move to the current player's king's position.
     for (auto file = 0u; file < 8; ++file) {
         for (auto rank = 0u; rank < 8; ++rank) {
             if (board[file][rank] != nullptr) {
-                if (!board[file][rank]->isValidMove(start_pos, king_position[player_turn], board, player_turn)) {
-                    // If the king is in check, undo the move and return error.
+                // If the king is in check, undo the move and return error.
+                test_pos[0] = file + 'A';
+                test_pos[1] = rank + '1';
+ 
+                auto error_code = board[file][rank]->isValidMove(test_pos, king_position[player_turn], board, opposite_player_turn);
+                if (!error_code) {
                     board[start_x][start_y] = board[end_x][end_y];
                     board[end_x][end_y] = ptr_holder;
                     return MOVING_INTO_CHECK;
@@ -169,7 +184,7 @@ bool ChessBoard::checkInput(const char* start_pos, const char* end_pos) {
             start_pos[0] > 'H' ||
             start_pos[1] < '1' ||
             start_pos[1] > '8') {
-                cerr << start_pos << "is in an invalid starting coordinate.\n";
+                cerr << start_pos << " is in an invalid starting coordinate.\n";
                 return false;
     }
     if (strlen(end_pos) != 2 ||
@@ -177,7 +192,7 @@ bool ChessBoard::checkInput(const char* start_pos, const char* end_pos) {
             end_pos[0] > 'H' ||
             end_pos[1] < '1' ||
             end_pos[1] > '8') {
-            cerr << end_pos << "is in an invalid end coordinate.\n";
+            cerr << end_pos << " is in an invalid end coordinate.\n";
             return false;
     }
     const auto file = start_pos[0] - 'A';

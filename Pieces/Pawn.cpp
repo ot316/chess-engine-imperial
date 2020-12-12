@@ -6,11 +6,11 @@ Pawn::Pawn(Colour colour) : Piece(colour) {
     type = pawn;
 }
 
-int Pawn::validPieceMovement(const char* start_pos, const char* end_pos, Piece* board[][8]) const {
+int Pawn::legalPieceMovement(const char* start_pos, const char* end_pos, Piece* board[][8]) const {
     if (!onVerticalAdjacent(start_pos, end_pos, board))
         return INVALID_MOVEMENT;
     
-    if (!validLineOfSight(start_pos, end_pos, board))
+    if (!legalLineOfSight(start_pos, end_pos, board))
         return NO_LINE_OF_SIGHT;
 
     return NO_ERROR;
@@ -48,7 +48,7 @@ bool Pawn::onVerticalAdjacent(const char* start_pos, const char* end_pos, Piece*
     return false;    
 }
 
-bool Pawn::validLineOfSight(const char* start_pos, const char* end_pos, Piece* board[][8]) const {
+bool Pawn::legalLineOfSight(const char* start_pos, const char* end_pos, Piece* board[][8]) const {
     auto start_x = start_pos[0] - 'A';
     auto start_y = start_pos[1] - '1';
     auto end_x = end_pos[0] - 'A';

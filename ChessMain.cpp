@@ -11,77 +11,86 @@ int main() {
 	cout << "========================\n\n";
 
 	ChessBoard cb;
-	cout << '\n';
+	// cout << '\n';
 
-	cb.submitMove("D7", "D6");
-	cout << '\n';
+	// cb.submitMove("D7", "D6");
+	// cout << '\n';
 
-	cb.submitMove("D4", "H6");
-	cout << '\n';
+	// cb.submitMove("D4", "H6");
+	// cout << '\n';
 
-	cb.submitMove("D2", "D4");
-	cout << '\n';
+	// cb.submitMove("D2", "D4");
+	// cout << '\n';
 
-	cb.submitMove("E7", "E5");
-	cout << '\n';
+	// cb.submitMove("E7", "E5");
+	// cout << '\n';
 
-	cb.submitMove("D4", "E5");
-	cout << '\n';
+	// cb.submitMove("D4", "E5");
+	// cout << '\n';
 
-	cb.submitMove("A7", "A5");
-	cout << '\n';
+	// cb.submitMove("A7", "A5");
+	// cout << '\n';
 
-	cb.submitMove("E5", "E6");
-	cout << '\n';
+	// cb.submitMove("E5", "E6");
+	// cout << '\n';
 
-	cb.submitMove("A5", "A4");
-	cout << '\n';	
+	// cb.submitMove("A5", "A4");
+	// cout << '\n';	
 
-	cb.submitMove("G2", "G3");
-	cout << '\n';
+	// cb.submitMove("G2", "G3");
+	// cout << '\n';
 
-	cb.submitMove("A4", "A3");
-	cout << '\n';	
+	// cb.submitMove("A4", "A3");
+	// cout << '\n';	
 
-	cb.submitMove("C1", "H6");
-	cout << '\n';
+	// cb.submitMove("C1", "H6");
+	// cout << '\n';
 
-	cb.submitMove("G7", "G6");
-	cout << '\n';
+	// cb.submitMove("G7", "G6");
+	// cout << '\n';
 
-	cb.submitMove("F1", "H3");
-	cout << '\n';
+	// cb.submitMove("F1", "H3");
+	// cout << '\n';
 
-	cb.submitMove("A8", "A6");
-	cout << '\n';
+	// cb.submitMove("A8", "A6");
+	// cout << '\n';
 
-	cb.submitMove("B2", "A3");
-	cout << '\n';
+	// cb.submitMove("B2", "A3");
+	// cout << '\n';
 
-	cb.submitMove("A6", "E6");
-	cout << '\n';
+	// cb.submitMove("A6", "E6");
+	// cout << '\n';
 
-	cb.submitMove("H3", "F5");
-	cout << '\n';
+	// cb.submitMove("H3", "F5");
+	// cout << '\n';
 
-	cb.submitMove("E6", "D6");
-	cout << '\n';
+	// cb.submitMove("E6", "D6");
+	// cout << '\n';
 
-	cb.submitMove("F5", "D3");
-	cout << '\n';
+	// cb.submitMove("F5", "D3");
+	// cout << '\n';
 
-	cb.submitMove("B7", "B5");
-	cout << '\n';
+	// cb.submitMove("B7", "B5");
+	// cout << '\n';
 
-	cb.submitMove("E1", "B4");
-	cout << '\n';
+	// cb.submitMove("E1", "B4");
+	// cout << '\n';
 
-	cb.submitMove("E8", "E2");
-	cout << '\n';
+	// cb.submitMove("D6", "D3");
+	// cout << '\n';
 
-	cb.submitMove("B4", "D6");
-	cout << '\n';
-	return 0;
+	// cb.submitMove("C2", "D3");
+	// cout << '\n';
+
+	// cb.submitMove("B8", "A6");
+	// cout << '\n';
+
+	// cb.submitMove("G1", "H3");
+	// cout << '\n';
+
+	// cb.submitMove("A6", "B4");
+	// cout << '\n';
+	//return 0;
 
 	cout << "=========================\n";
 	cout << "Alekhine vs. Vasic (1931)\n";

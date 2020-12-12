@@ -22,10 +22,12 @@ class ChessBoard {
 
         char king_position[2][3];
 
+        bool in_check[2] = {false, false};
+
         // Sets up the chess board ready for a new game.
         void configureBoard();
 
-        // Helper function to check the start and end coordinates are valid.
+        // Helper function to check the start and end coordinates are legal.
         bool checkInput(const char* start_pos, const char* end_pos);
 
         // Helper function to ensure a move does not place the king in check.
@@ -48,6 +50,10 @@ class ChessBoard {
 
         // Moves a piece from the start position to the end position.
         void submitMove(const char* start_pos, const char* end_pos);
+
+        bool isInCheck(Colour current_player);
+
+        bool hasLegalMoves(Colour player);
 
         // Discards the current game and resets the board.
         void resetBoard();

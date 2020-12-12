@@ -2,17 +2,21 @@
 
 Piece::Piece(Colour colour) : colour(colour) {}
 
+
 Piece::~Piece(){}
+
 
 const Colour Piece::getColour() const {
     return colour;
 }
 
+
 const Type Piece::getType() const {
     return type;
 }
 
-int Piece::isValidMove(const char* start_pos, const char* end_pos, Piece* board[][8], Colour player_turn) const {
+
+int Piece::isLegalMove(const char* start_pos, const char* end_pos, Piece* board[][8], Colour player_turn) const {
     if (start_pos == end_pos)
         return SAME_START_AND_END_SQUARE;
         
@@ -30,7 +34,7 @@ int Piece::isValidMove(const char* start_pos, const char* end_pos, Piece* board[
 
     /* Check the piece can move to the end position given its individual rules of movement,
     and check that there are no pieces obstructing the movement, should the piece require this. */
-    int error_code = this->validPieceMovement(start_pos, end_pos, board);
+    int error_code = this->legalPieceMovement(start_pos, end_pos, board);
     if (error_code)
         return error_code;
 
@@ -38,7 +42,7 @@ int Piece::isValidMove(const char* start_pos, const char* end_pos, Piece* board[
 }
 
 
-// Shared movement primitive validator functions
+// Shared movement primitive legalator functions
 bool Piece::onDiagonal(const char* start_pos, const char* end_pos) const {
     auto delta_x = abs(end_pos[0] - start_pos[0]);
     auto delta_y = abs(end_pos[1] - start_pos[1]);

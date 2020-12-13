@@ -125,7 +125,7 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     if (outcome == in_play)
         cout << ".\n";
 
-    displayBoard();
+    //displayBoard();
 }
 
 bool ChessBoard::movingIntoCheck(const char* start_pos, const char* end_pos) {

@@ -187,7 +187,7 @@ void ChessBoard::configureBoard() {
     strcpy(king_position[white],"E1");
     strcpy(king_position[black],"E8");
 
-    displayBoard();
+    //displayBoard();
 
 }
 

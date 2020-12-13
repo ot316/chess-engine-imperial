@@ -125,7 +125,7 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     if (outcome == in_play && in_check[other_player_turn])
         cout << ".\n";
 
-    //displayBoard();
+    // displayBoard();
 }
 
 bool ChessBoard::movingIntoCheck(const char* start_pos, const char* end_pos) {
@@ -187,8 +187,9 @@ void ChessBoard::configureBoard() {
     strcpy(king_position[white],"E1");
     strcpy(king_position[black],"E8");
 
-    //displayBoard();
+    player_turn = white;
 
+    //displayBoard();
 }
 
 bool ChessBoard::checkInput(const char* start_pos, const char* end_pos) {

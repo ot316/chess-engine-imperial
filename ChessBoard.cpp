@@ -122,7 +122,7 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
 
     toggle(player_turn);
     outcome = checkGameOutcome();
-    if (outcome == in_play)
+    if (outcome == in_play && in_check[other_player_turn])
         cout << ".\n";
 
     //displayBoard();

@@ -16,6 +16,7 @@ int Pawn::legalPieceMovement(const char* start_pos, const char* end_pos, Piece* 
     return NO_ERROR;
 }
 
+
 bool Pawn::onVerticalAdjacent(const char* start_pos, const char* end_pos, Piece* board[][8]) const {
     auto start_x = start_pos[0] - 'A';
     auto start_y = start_pos[1] - '1';
@@ -23,7 +24,7 @@ bool Pawn::onVerticalAdjacent(const char* start_pos, const char* end_pos, Piece*
     auto end_y = end_pos[1] - '1';
     auto delta_y = end_y - start_y;
     auto delta_x = abs(end_x - start_x);
-
+    
     // Reverse permitted direction depending on colour.
     if (this->getColour() == black)
         delta_y = delta_y * -1;
@@ -33,9 +34,9 @@ bool Pawn::onVerticalAdjacent(const char* start_pos, const char* end_pos, Piece*
         if (board[end_x][end_y] != nullptr)
             return true;
 
-     if (delta_x == 0 && board[end_x][end_y] == nullptr) {
+    if (delta_x == 0) {
         // Allow the pawn to move 2 squares forwards only if it is on its first move.
-        if (moved == 0) {
+        if (!this->hasMoved()) {
             if ((delta_y == 1) || (delta_y == 2)) 
                 return true;      
         }
@@ -48,28 +49,28 @@ bool Pawn::onVerticalAdjacent(const char* start_pos, const char* end_pos, Piece*
     return false;    
 }
 
+
 bool Pawn::legalLineOfSight(const char* start_pos, const char* end_pos, Piece* board[][8]) const {
     auto start_x = start_pos[0] - 'A';
     auto start_y = start_pos[1] - '1';
-    auto end_x = end_pos[0] - 'A';
     auto end_y = end_pos[1] - '1';
-    auto delta_x = end_y - start_y;
+    auto delta_y = abs(end_y - start_y);
 
-    if (!delta_x) {
-        if(board[end_x][end_y] != 0)
-                    return false;
+    auto increment = (this->getColour() == black) ? -1 : 1;
 
-        auto iterator = ((end_y > start_y) ? 1 : -1);
+    if (delta_y == 2)
+        if (board[start_x][start_y + increment] != nullptr)
+            return false;
 
-        for (int i = start_y + iterator; i != end_y; i = i + iterator)
-        {
-            if (board[start_x][i] != 0)
-                return false;	
-        }
-	}
-	return true;
+    return true;
 }
 
-void Pawn::hasMoved() {
-    moved = true;
+
+int Pawn::hasMoved() const {
+    return moved_count;
+}
+
+
+void Pawn::moved() {
+    this->moved_count++;
 }

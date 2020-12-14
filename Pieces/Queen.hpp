@@ -10,6 +10,6 @@ class Queen : public Piece {
         
     public:
 
-    Queen(Colour colour);
+        Queen(Colour colour);
     //move 
 };

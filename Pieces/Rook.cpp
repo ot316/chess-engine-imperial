@@ -39,3 +39,11 @@ bool Rook::legalLineOfSight(const char* start_pos, const char* end_pos, Piece* b
 
     return true;
 }
+
+int Rook::hasMoved() const {
+    return moved_count;
+}
+
+void Rook::moved() {
+    this->moved_count++;
+}

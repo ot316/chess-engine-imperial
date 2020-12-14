@@ -13,6 +13,8 @@ class Piece {
 
     protected:
 
+        int moved_count = 0;
+
         Colour colour;
 
         Type type = null;
@@ -41,12 +43,15 @@ class Piece {
         int isLegalMove(const char* start_pos, const char* end_pos, Piece* board[][8], Colour player_turn) const;
 
         // Virtual function to check if a pawn has completed its first move.
-        virtual void hasMoved() {return;};
+        virtual int hasMoved() const {return 0;};
+
+        virtual void moved() {return;};
 
         // Return the pieces colour
         const Colour getColour() const;
 
         // Return the pieces type.
         const Type getType() const;
+
 
 };

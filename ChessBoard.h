@@ -39,6 +39,8 @@ class ChessBoard {
         // Checks wether the game is won, a draw or is in play.
         Outcome checkGameOutcome();
 
+        bool castling(const char* start_pos, const char* end_pos);
+
         // Clears the board and frees memory.
         void clearBoard();
 

@@ -5,6 +5,7 @@ King::King(Colour colour) : Piece(colour) {
     type = king;
 }
 
+
 int King::legalPieceMovement(const char* start_pos, const char* end_pos, Piece* board[][8]) const {
     if (!ajdacentTo(start_pos, end_pos))
         return INVALID_MOVEMENT;
@@ -12,6 +13,10 @@ int King::legalPieceMovement(const char* start_pos, const char* end_pos, Piece* 
     return NO_ERROR;
 }
 
-void King::hasMoved() {
-    moved = true;
+int King::hasMoved() const {
+    return moved_count;
+}
+
+void King::moved() {
+    this->moved_count++;
 }

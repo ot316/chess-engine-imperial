@@ -29,11 +29,14 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
         return;
     }
 
+    // Special case if King is castling
+    if (castling(start_pos, end_pos))
+        return;
+    
     const auto file = start_pos[0] - 'A';
     const auto rank = start_pos[1] - '1';
 
     // Check if move is legal.
-
     int error_code = board[file][rank]->isLegalMove(start_pos, end_pos, board, player_turn);
 
     switch (error_code) {
@@ -60,10 +63,9 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
             cerr << " cannot move from " << start_pos << " to ";
             cerr << end_pos << " as there is a piece in the way.\n";
             return;
-        }
+    }
     
     // Check if the move results in the mover's king being in check.
-
     if (movingIntoCheck(start_pos, end_pos) == MOVING_INTO_CHECK) {
         if (in_check[player_turn]) {
             cerr << "Moving " << print_colour[player_turn];
@@ -92,11 +94,12 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     cout << "'s " << print_type[board[file][rank]->getType()];
     cout << " moves from " << start_pos << " to " << end_pos;
 
-    board[start_x][start_y]->hasMoved(); // Used to keep track of the movement of pawns and kings.
+    board[start_x][start_y]->moved();    // Used to keep track of the movement of pawns and kings.
 
-    if (board[start_x][start_y]->getType() == king) // Update the King's position
-        strcpy(king_position[player_turn], end_pos);
+    if (board[start_x][start_y]->getType() == king)
+        strcpy(king_position[player_turn], end_pos);    // Update the King's position.
 
+    // Check if an enemy piece has been taken.
     if (board[end_x][end_y] != nullptr) {
         cout << " taking ";
         cout << print_colour[board[end_x][end_y]->getColour()];
@@ -119,14 +122,14 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     else 
         in_check[other_player_turn] = false;
 
-
     toggle(player_turn);
     outcome = checkGameOutcome();
     if (outcome == in_play && in_check[other_player_turn])
         cout << ".\n";
 
-    // displayBoard();
+     displayBoard();
 }
+
 
 bool ChessBoard::movingIntoCheck(const char* start_pos, const char* end_pos) {
     const auto start_x = start_pos[0] - 'A';
@@ -139,18 +142,27 @@ bool ChessBoard::movingIntoCheck(const char* start_pos, const char* end_pos) {
     board[end_x][end_y] = board[start_x][start_y];
     board[start_x][start_y] = nullptr;
 
+    char king_position_holder[3]; // Remember the King's previous position
+    strcpy(king_position_holder, king_position[player_turn]);
+
+    if (board[end_x][end_y]->getType() == king) // Temporarily update the King's position
+        strcpy(king_position[player_turn], end_pos);
+
     // If player is in check undo the move and return error.
     if (isInCheck(player_turn)) {
         board[start_x][start_y] = board[end_x][end_y];
         board[end_x][end_y] = ptr_holder;
+        strcpy(king_position[player_turn], king_position_holder);
         return MOVING_INTO_CHECK;
     }
 
     // Undo the move and return no error.
     board[start_x][start_y] = board[end_x][end_y];
     board[end_x][end_y] = ptr_holder;
+    strcpy(king_position[player_turn], king_position_holder);
     return NO_ERROR;
 }
+
 
 void ChessBoard::configureBoard() {
     std::cout << "A new chess game is started!\n";
@@ -188,9 +200,9 @@ void ChessBoard::configureBoard() {
     strcpy(king_position[black],"E8");
 
     player_turn = white;
-
-    //displayBoard();
+    outcome = in_play;
 }
+
 
 bool ChessBoard::checkInput(const char* start_pos, const char* end_pos) {
     // Check Coordinates are within range
@@ -281,25 +293,19 @@ bool ChessBoard::hasLegalMoves(Colour player) {
     using namespace std;
     char start_pos[2];
     char end_pos[2];
-    for (auto i = 'A'; i < 'I'; ++i) {
-        for (auto j = '1'; j < '8'; ++j) {
-            for (auto k = 'A'; k < 'I'; ++k) {
-                for (auto l = '1'; l < '8'; ++l) {
+    for (int i = 'A'; i < 'I'; ++i) 
+        for (int j = '1'; j < '9'; ++j) 
+            for (int k = 'A'; k < 'I'; ++k) 
+                for (int l = '1'; l < '9'; ++l) 
                     if (board[i - 'A'][j - '1'] != nullptr) {
                         start_pos[0] = i;
                         start_pos[1] = j;
                         end_pos[0] = k;
                         end_pos[1] = l;
-                        if (board[i - 'A'][j - '1']->isLegalMove(start_pos, end_pos, board, player) == NO_ERROR) {
-                            if (movingIntoCheck(start_pos, end_pos) != MOVING_INTO_CHECK) {
+                        if (board[i - 'A'][j - '1']->isLegalMove(start_pos, end_pos, board, player) == NO_ERROR)
+                            if (movingIntoCheck(start_pos, end_pos) != MOVING_INTO_CHECK) 
                                 return true;
-                            }
-                        }
                     }
-                }
-            }
-        }
-    }
     return false;
 }
 
@@ -309,6 +315,48 @@ void ChessBoard::toggle(Colour& player_turn) {
         player_turn = black;
     else
         player_turn = white;
+}
+
+
+bool ChessBoard::castling(const char* start_pos, const char* end_pos) {
+    if (!strcmp(king_position[player_turn], start_pos))
+        return false;
+    
+    auto start_x = start_pos[0] - 'A';
+    auto start_y = start_pos[1] - '1';
+    auto end_x = end_pos[0] - 'A';
+    auto end_y = end_pos[1] - '1';
+    auto delta_x = end_x - start_x;
+
+    if (delta_x != 2 || delta_x != -2)
+        return false;
+
+    bool long_castle;
+    
+    if (delta_x == 2)
+        long_castle == true;
+
+
+    if (board[0][start_y] == nullptr && board[8][start_y] == nullptr)
+
+    if (board[0][start_y]->getType() != rook)
+        if (board[0][start_y]->getColour() != player_turn)
+            return false;
+
+    if (board[8][start_y]->getType() != rook)
+        if (board[8][start_y]->getColour() != player_turn)
+            return false;
+
+    if (board[end_x][end_y] == nullptr)
+        return false;
+
+    if (board[start_x][start_y]->hasMoved() || board[end_x][end_y]->hasMoved())
+        return false;
+
+    if (isInCheck(player_turn))
+        return false;
+    
+    return true;
 }
 
 

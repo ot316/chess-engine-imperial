@@ -75,5 +75,103 @@ int main() {
 	cb.submitMove("D3", "G6");
 	cout << '\n';
 
+	cout << "=========================\n";
+	cout << "4 Move Checkmate\n";
+	cout << "=========================\n\n";
+
+	cb.resetBoard();
+	cout << '\n';
+
+	cb.submitMove("E2", "E3");
+	cb.submitMove("E7", "E5");
+	cout << '\n';
+
+	cb.submitMove("D1", "H5");
+	cb.submitMove("B8", "C6");
+	cout << '\n';
+
+	cb.submitMove("F1", "C4");
+	cb.submitMove("G8", "F6");
+	cout << '\n';
+
+	cb.submitMove("H5", "F7");
+	cout << '\n';
+
+	cout << "=========================\n";
+	cout << "Fastest known stalemate\n";
+	cout << "=========================\n\n";
+
+	cb.resetBoard();
+	cout << '\n';
+
+	cb.submitMove("C2", "C4");
+	cb.submitMove("H7", "H5");
+	cout << '\n';
+
+	cb.submitMove("H2", "H4");
+	cb.submitMove("A7", "A5");
+	cout << '\n';
+
+	cb.submitMove("D1", "A4");
+	cb.submitMove("A8", "A6");
+	cout << '\n';
+
+	cb.submitMove("A4", "A5");
+	cb.submitMove("A6", "H6");
+	cout << '\n';
+
+	cb.submitMove("A5", "C7");
+	cb.submitMove("F7", "F6");
+	cout << '\n';
+
+	cb.submitMove("C7", "D7");
+	cb.submitMove("E8", "F7");
+	cout << '\n';
+
+	cb.submitMove("D7", "B7");
+	cb.submitMove("D8", "D3");
+	cout << '\n';
+
+	cb.submitMove("B7", "B8");
+	cb.submitMove("D3", "H7");
+	cout << '\n';
+
+	cb.submitMove("B8", "C8");
+	cb.submitMove("F7", "G6");
+	cout << '\n';
+
+	cb.submitMove("C8", "E6");
+	cout << '\n';
+
+	cout << "=========================\n";
+	cout << "3 Move checkmate\n";
+	cout << "=========================\n\n";
+
+	cb.resetBoard();
+	cout << '\n';
+
+	cb.submitMove("E2", "E4");
+	cb.submitMove("F7", "F5");
+	cout << '\n';
+
+	cb.submitMove("E4", "F5");
+	cb.submitMove("G7", "G5");
+	cout << '\n';
+
+	cb.submitMove("D1", "H5");
+	cout << '\n';
+
+	cout << "=========================\n";
+	cout << "3 Move checkmate\n";
+	cout << "=========================\n\n";
+
+	cb.resetBoard();
+	cout << '\n';
+
+	cb.submitMove("E2", "E4");
+	cb.submitMove("F7", "F5");
+
+	cb.submitMove("E4", "D5");
+	cout << '\n';
 	return 0;
 }

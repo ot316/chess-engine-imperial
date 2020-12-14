@@ -1,5 +1,6 @@
 #include "Piece.hpp"
 #include "Queen.hpp"
+#include<iostream>
 
 Queen::Queen(Colour colour) : Piece(colour) {
     type = queen;
@@ -25,30 +26,28 @@ bool Queen::legalLineOfSight(const char* start_pos, const char* end_pos, Piece* 
     auto delta_y = end_y - start_y;
 
     auto increment = ((end_x > start_x || end_y > start_y) ? 1 : -1);
-
-    if (!delta_x) {
-        for (auto i = start_y + increment; i != end_y; i+=increment)
+    if (!delta_x) 
+        for (auto i = start_y + increment; i != end_y; i += increment)
             if (board[start_x][i] != nullptr)
                 return false;
-    }
 
-    if (!delta_y) {
-        for (auto i = start_x + increment; i != end_y; i+=increment)
+    if (!delta_y) 
+        for (auto i = start_x + increment; i != end_x; i += increment)
             if (board[i][start_y] != nullptr)
                 return false;
-    }
+
     // Check for diagonal line of sight.
     auto multiplier = ((delta_x < 0 && delta_y < 0) || (delta_x > 0 && delta_y > 0) ? 1 : -1);
 
-	if (delta_x < 0) 
+	if (delta_x < 0 && delta_y != 0) 
 		for (auto i = -1; i != delta_x; --i)
 			if (board[start_x + i][start_y + (i * multiplier)] != nullptr)
-				return false;	
+				return false;
 
-	if (delta_x > 0)
+	if (delta_x > 0 && delta_y != 0)
     	for (auto i = 1; i != delta_x; ++i)
 			if (board[start_x + i][start_y + (i * multiplier)] != nullptr)
-				return false;	
+				return false;
                 
 	return true; 
 }

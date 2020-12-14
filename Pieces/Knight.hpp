@@ -10,6 +10,5 @@ class Knight : public Piece {
         
     public:
 
-    Knight(Colour colour);
-    //move 
+        Knight(Colour colour);
 };

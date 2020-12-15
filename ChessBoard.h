@@ -24,6 +24,9 @@ class ChessBoard {
 
         bool in_check[2] = {false, false};
 
+        // Used to keep track if a player has previously been in check for the purpose of castling.
+        bool has_been_in_check[2] = {false, false};
+
         // Sets up the chess board ready for a new game.
         void configureBoard();
 
@@ -39,7 +42,11 @@ class ChessBoard {
         // Checks wether the game is won, a draw or is in play.
         Outcome checkGameOutcome();
 
+        // Handles special case for castling move
         bool castling(const char* start_pos, const char* end_pos);
+
+        // Handles special case for pawn promotion.
+        void promotePawn(const char* pawn_pos);
 
         // Clears the board and frees memory.
         void clearBoard();
@@ -53,7 +60,7 @@ class ChessBoard {
         // Moves a piece from the start position to the end position.
         void submitMove(const char* start_pos, const char* end_pos);
 
-        bool isInCheck(Colour current_player);
+        bool isInCheck(Colour current_player, const char* target);
 
         bool hasLegalMoves(Colour player);
 

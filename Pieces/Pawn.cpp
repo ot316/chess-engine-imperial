@@ -34,7 +34,7 @@ bool Pawn::onVerticalAdjacent(const char* start_pos, const char* end_pos, Piece*
         if (board[end_x][end_y] != nullptr)
             return true;
 
-    if (delta_x == 0) {
+    if (delta_x == 0 && board[end_x][end_y] == nullptr) {
         // Allow the pawn to move 2 squares forwards only if it is on its first move.
         if (!this->hasMoved()) {
             if ((delta_y == 1) || (delta_y == 2)) 

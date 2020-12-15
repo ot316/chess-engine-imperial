@@ -70,8 +70,9 @@ bool Piece::ajdacentTo(const char* start_pos, const char* end_pos) const {
     auto delta_x = abs(end_pos[0] - start_pos[0]);
     auto delta_y = abs(end_pos[1] - start_pos[1]);
 
-    if ((delta_x != 0) && (delta_y != 0) && (delta_x + delta_y <= 2)) 
-        return true;
+    if (delta_x == 1 || delta_y == 1)
+        if (delta_x + delta_y <= 2)
+            return true;
 
     return false;
 }

@@ -30,8 +30,8 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     }
 
     // Special case if King is castling
-    // if (castling(start_pos, end_pos))
-    //     return;
+    if (castling(start_pos, end_pos))
+        return;
     
     const auto file = start_pos[0] - 'A';
     const auto rank = start_pos[1] - '1';
@@ -109,14 +109,19 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     }
     else
         cout << ".\n";
+
+    if (board[start_x][start_y]->getType() == pawn)     // Check if a pawn has reached the opposite edge of the board.
+        if (end_y == 7 || end_y == 0)
+            promotePawn(start_pos);
     
     board[end_x][end_y] = board[start_x][start_y];
     board[start_x][start_y] = nullptr;
 
     // Check if the move results in check for the opposing player.
 
-    if (isInCheck(other_player_turn)) {
+    if (isInCheck(other_player_turn, king_position[other_player_turn])) {
         in_check[other_player_turn] = true;
+        has_been_in_check[other_player_turn] = true;
         cout << print_colour[other_player_turn] << " is in check";
     }
     else 
@@ -149,7 +154,7 @@ bool ChessBoard::movingIntoCheck(const char* start_pos, const char* end_pos) {
         strcpy(king_position[player_turn], end_pos);
 
     // If player is in check undo the move and return error.
-    if (isInCheck(player_turn)) {
+    if (isInCheck(player_turn, king_position[player_turn])) {
         board[start_x][start_y] = board[end_x][end_y];
         board[end_x][end_y] = ptr_holder;
         strcpy(king_position[player_turn], king_position_holder);
@@ -201,6 +206,8 @@ void ChessBoard::configureBoard() {
 
     player_turn = white;
     outcome = in_play;
+    has_been_in_check[white] = false;
+    has_been_in_check[black] = false;
 }
 
 
@@ -258,8 +265,8 @@ void ChessBoard::displayBoard() const {
 }
 
 
-bool ChessBoard::isInCheck(Colour current_player) {
-    // Check if any piece can make a legal move to the current player's king's position.
+bool ChessBoard::isInCheck(Colour current_player, const char* target) {
+    // Check if any piece can make a legal move to the target position.
     Colour other_player = current_player;
     toggle(other_player);
     char test_pos[2];
@@ -269,7 +276,7 @@ bool ChessBoard::isInCheck(Colour current_player) {
                 // If the king is in check return error.
                 test_pos[0] = file + 'A';
                 test_pos[1] = rank + '1';
-                if (board[file][rank]->isLegalMove(test_pos, king_position[current_player], board, other_player) == NO_ERROR) {
+                if (board[file][rank]->isLegalMove(test_pos, target, board, other_player) == NO_ERROR) {
                     return true;
                 }
             }
@@ -320,67 +327,100 @@ void ChessBoard::toggle(Colour& player_turn) {
 
 bool ChessBoard::castling(const char* start_pos, const char* end_pos) {
     using std::cerr;
+    using std::cout;
 
-    if (!strcmp(king_position[player_turn], start_pos))
+    if (strcmp(king_position[player_turn], start_pos))
         return false;
     
-    auto start_x = start_pos[0] - 'A';
+    int start_x = start_pos[0] - 'A';
     auto start_y = start_pos[1] - '1';
     auto end_x = end_pos[0] - 'A';
     auto end_y = end_pos[1] - '1';
     auto delta_x = end_x - start_x;
 
-    // King side castle
+    if (delta_x != -2 && delta_x != 2)
+        return false;
+
+    // Assume Queen side castle.
+    int rook_start_x = 0;
+    auto increment = -1;
+
+    // Case for king side castle.
     if (delta_x == 2) {
-        if (board[8][start_y] == nullptr)
-            return false;
-        
-        if (board[8][start_y]->getType() != rook)
-            return false;
-    
-        if (board[8][start_y]->getColour() != player_turn)
-            return false;    
-
-        if (board[8][start_y]->hasMoved()) {
-            cerr << "Cannot perform king's side castle because " << player_turn << "'s rook has previously moved.\n";
-            return true;
-        }
-
-        if (board[start_x][start_y]->hasMoved()) {
-            cerr << "Cannot perform king's side castle because " << player_turn << "'s King has previously moved.\n";
-            return true;
-        }
-
-        if (isInCheck(player_turn)) {
-            cerr << "Cannot perform king's side castle because " << player_turn << " is in check.\n";
-        }
-
-
+        rook_start_x = 7;
+        increment = 1;
     }
-   
-    // Queen side castle castle
-    if (delta_x == -2) {
-        if (board[8][start_y] == nullptr)
-            return false;
-        
-        if (board[8][start_y]->getType() != rook)
-            return false;
-    
-        if (board[8][start_y]->getColour() != player_turn)
-            return false;    
 
-        if(board[8][start_y]->hasMoved()) {
-            cerr << "Cannot perform king's side castle because " << player_turn << "'s rook has previously moved.\n";
+    if (board[rook_start_x][start_y] == nullptr) {
+        return false;}
+
+    if (board[rook_start_x][start_y]->getColour() != player_turn)
+        return false;   
+    
+    if (board[rook_start_x][start_y]->getType() != rook)
+        return false; 
+
+    if (board[rook_start_x][start_y]->hasMoved()) {
+        cerr << "Castling is illegal because " << player_turn << "'s rook has previously moved.\n";
+        return true;
+    }
+
+    if (board[start_x][start_y]->hasMoved()) {
+        cerr << "castling is illegal because " << print_colour[player_turn] << "'s King has previously moved.\n";
+        return true;
+    }
+
+    if (isInCheck(player_turn, king_position[player_turn])) {
+        cerr << "Castling is illegal because " << print_colour[player_turn] << " is in check.\n";
+        return true;
+    }
+
+    if (has_been_in_check[player_turn]) {
+        cerr << "Castling is illegal because " << print_colour[player_turn] << " has previously been in check.\n";
+        return true;
+    }
+
+    for (int i = start_x + increment; i < rook_start_x; i += increment)
+        if (board[i][start_y] != nullptr) {
+            cerr << "Castling is illegal as there is a piece in the way.\n";
             return true;
         }
 
-        if(board[8][start_y]->hasMoved()) {
-            cerr << "Cannot perform king's side castle because " << player_turn << "'s King has previously moved.\n";
+    char test_pos[2];
+    test_pos[1] = start_pos[1];
+    for (auto i = start_pos[0]; i < (rook_start_x + 'A'); i += increment) {
+        test_pos[0] = i;
+        if (isInCheck(player_turn, test_pos)) {
+            cerr << "Castling is illegal as the king would move through check.\n";
             return true;
         }
     }
+
+    // Perform the castling move.
+    strcpy(king_position[player_turn], end_pos);
+    board[end_x][end_y] = board[start_x][start_y]; // Move King
+    board[start_x][start_y] = nullptr;
     
-    return false;
+    board[start_x + increment][start_y] = board[rook_start_x][start_y]; // Move Rook
+    board[rook_start_x][start_y] = nullptr;
+
+
+    cout << print_colour[player_turn] << " performed a ";
+    if (increment == -1) cout << "queen";
+    else cout << "king";
+    cout << " side castle.\n";
+
+    return true;
+}
+
+
+void ChessBoard::promotePawn(const char* pawn_pos) {
+    auto start_x = pawn_pos[0] - 'A';
+    auto start_y = pawn_pos[1] - '1';
+    delete board[start_x][start_y];
+    board[start_x][start_y] = new Queen(player_turn);
+    std::cout << print_colour[player_turn] << "'s pawn has been promoted to a queen.\n";
+
 }
 
 

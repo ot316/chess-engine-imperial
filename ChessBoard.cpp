@@ -379,16 +379,18 @@ bool ChessBoard::castling(const char* start_pos, const char* end_pos) {
         cerr << "Castling is illegal because " << print_colour[player_turn] << " has previously been in check.\n";
         return true;
     }
-
-    for (int i = start_x + increment; i < rook_start_x; i += increment)
+        // std::cout << start_x << start_y << rook_start_x << increment << std::endl;
+    
+    for (int i = start_x + increment; i != rook_start_x; i += increment) {
         if (board[i][start_y] != nullptr) {
             cerr << "Castling is illegal as there is a piece in the way.\n";
             return true;
         }
+    }
 
     char test_pos[2];
     test_pos[1] = start_pos[1];
-    for (auto i = start_pos[0]; i < (rook_start_x + 'A'); i += increment) {
+    for (auto i = start_pos[0]; i != (rook_start_x + 'A'); i += increment) {
         test_pos[0] = i;
         if (isInCheck(player_turn, test_pos)) {
             cerr << "Castling is illegal as the king would move through check.\n";
@@ -420,7 +422,6 @@ void ChessBoard::promotePawn(const char* pawn_pos) {
     delete board[start_x][start_y];
     board[start_x][start_y] = new Queen(player_turn);
     std::cout << print_colour[player_turn] << "'s pawn has been promoted to a queen.\n";
-
 }
 
 

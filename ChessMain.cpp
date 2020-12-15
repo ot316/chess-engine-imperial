@@ -204,6 +204,7 @@ int main() {
 	cout << '\n';
 
 	cb.submitMove("G1", "F3");
+
 	cb.submitMove("D8", "G5");
 	cout << '\n';
 
@@ -265,6 +266,36 @@ int main() {
 	cout << '\n';
 
 	cb.submitMove("E1", "C1"); // still illegal
+	cout << '\n';
+
+	cout << "========================================\n";
+	cout << "2nd Test for illegal queen side castling\n";
+	cout << "======================================\n\n";
+
+	cb.resetBoard();
+	cout << '\n';
+
+	cb.submitMove("E2", "E4");
+	cb.submitMove("D7", "D5");
+	cout << '\n';
+
+	cb.submitMove("D1", "F3");
+	cb.submitMove("B8", "D7");
+	cout << '\n';
+
+	cb.submitMove("D2", "D3");
+	cb.submitMove("E7", "E6");
+	cout << '\n';
+
+	cb.submitMove("C1", "G5");
+	cb.submitMove("D8", "G5");
+	cout << '\n';
+
+	cb.submitMove("B1", "C3");
+	cb.submitMove("D5", "E4");
+	cout << '\n';
+
+	cb.submitMove("E1", "C1");
 	cout << '\n';
 
 	cout << "=======================\n";

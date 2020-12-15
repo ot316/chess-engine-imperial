@@ -270,7 +270,7 @@ int main() {
 
 	cout << "========================================\n";
 	cout << "2nd Test for illegal queen side castling\n";
-	cout << "======================================\n\n";
+	cout << "========================================\n\n";
 
 	cb.resetBoard();
 	cout << '\n';
@@ -295,7 +295,7 @@ int main() {
 	cb.submitMove("D5", "E4");
 	cout << '\n';
 
-	cb.submitMove("E1", "C1");
+	cb.submitMove("E1", "C1"); // illegal move
 	cout << '\n';
 
 	cout << "=======================\n";

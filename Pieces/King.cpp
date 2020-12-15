@@ -13,10 +13,12 @@ int King::legalPieceMovement(const char* start_pos, const char* end_pos, Piece* 
     return NO_ERROR;
 }
 
-int King::hasMoved() const {
-    return moved_count;
+
+bool King::hasMoved() const {
+    return has_moved;
 }
 
+
 void King::moved() {
-    this->moved_count++;
+    this->has_moved = true;
 }

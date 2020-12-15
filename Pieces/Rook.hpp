@@ -4,7 +4,7 @@ class Rook : public Piece {
 
     private:
 
-        int moved_count = 0;
+        bool has_moved = false;
 
         int legalPieceMovement(const char* sart_position, const char* end_pos, Piece* board[][8]) const;
 
@@ -16,5 +16,5 @@ class Rook : public Piece {
 
         void moved();
 
-        int hasMoved() const;
+        bool hasMoved() const;
 };

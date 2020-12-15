@@ -407,7 +407,7 @@ bool ChessBoard::castling(const char* start_pos, const char* end_pos) {
     board[rook_start_x][start_y] = nullptr;
 
 
-    cout << print_colour[player_turn] << " performed a ";
+    cout << print_colour[player_turn] << " performs a ";
     if (increment == -1) cout << "queen";
     else cout << "king";
     cout << " side castle.\n";

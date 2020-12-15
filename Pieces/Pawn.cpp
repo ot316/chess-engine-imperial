@@ -66,11 +66,11 @@ bool Pawn::legalLineOfSight(const char* start_pos, const char* end_pos, Piece* b
 }
 
 
-int Pawn::hasMoved() const {
-    return moved_count;
+bool Pawn::hasMoved() const {
+    return has_moved;
 }
 
 
 void Pawn::moved() {
-    this->moved_count++;
+    this->has_moved = true;
 }

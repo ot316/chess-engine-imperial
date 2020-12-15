@@ -10,6 +10,5 @@ class Bishop : public Piece {
         
     public:
 
-    Bishop(Colour colour);
-    //move 
+        Bishop(Colour colour);
 };

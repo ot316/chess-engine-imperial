@@ -40,10 +40,10 @@ bool Rook::legalLineOfSight(const char* start_pos, const char* end_pos, Piece* b
     return true;
 }
 
-int Rook::hasMoved() const {
-    return moved_count;
+bool Rook::hasMoved() const {
+    return has_moved;
 }
 
 void Rook::moved() {
-    this->moved_count++;
+    this->has_moved = true;
 }

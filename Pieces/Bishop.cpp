@@ -1,11 +1,10 @@
 #include "Piece.hpp"
 #include "Bishop.hpp"
-#include<iostream>
-using namespace std;
 
 Bishop::Bishop(Colour colour) : Piece(colour) {
     type = bishop;
 }
+
 
 int Bishop::legalPieceMovement(const char* start_pos, const char* end_pos, Piece* board[][8]) const {
     if (!onDiagonal(start_pos, end_pos))
@@ -16,6 +15,7 @@ int Bishop::legalPieceMovement(const char* start_pos, const char* end_pos, Piece
     
     return NO_ERROR;
 }
+
 
 bool Bishop::legalLineOfSight(const char* start_pos, const char* end_pos, Piece* board[][8]) const {
     auto start_x = start_pos[0] - 'A';

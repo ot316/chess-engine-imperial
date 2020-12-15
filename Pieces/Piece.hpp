@@ -43,7 +43,7 @@ class Piece {
         int isLegalMove(const char* start_pos, const char* end_pos, Piece* board[][8], Colour player_turn) const;
 
         // Virtual function to check if a pawn has completed its first move.
-        virtual int hasMoved() const {return 0;};
+        virtual bool hasMoved() const {return 0;};
 
         virtual void moved() {return;};
 

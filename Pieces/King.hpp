@@ -4,7 +4,7 @@ class King : public Piece {
 
     private:
 
-        int moved_count = 0;
+        bool has_moved = false;
 
         int legalPieceMovement(const char* start_pos, const char* end_pos, Piece* board[][8]) const;
 
@@ -14,5 +14,5 @@ class King : public Piece {
 
         void moved();
 
-        int hasMoved() const;
+        bool hasMoved() const;
 };

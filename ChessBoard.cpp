@@ -30,8 +30,8 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     }
 
     // Special case if King is castling
-    if (castling(start_pos, end_pos))
-        return;
+    // if (castling(start_pos, end_pos))
+    //     return;
     
     const auto file = start_pos[0] - 'A';
     const auto rank = start_pos[1] - '1';
@@ -319,6 +319,8 @@ void ChessBoard::toggle(Colour& player_turn) {
 
 
 bool ChessBoard::castling(const char* start_pos, const char* end_pos) {
+    using std::cerr;
+
     if (!strcmp(king_position[player_turn], start_pos))
         return false;
     
@@ -328,35 +330,57 @@ bool ChessBoard::castling(const char* start_pos, const char* end_pos) {
     auto end_y = end_pos[1] - '1';
     auto delta_x = end_x - start_x;
 
-    if (delta_x != 2 || delta_x != -2)
-        return false;
-
-    bool long_castle;
-    
-    if (delta_x == 2)
-        long_castle == true;
-
-
-    if (board[0][start_y] == nullptr && board[8][start_y] == nullptr)
-
-    if (board[0][start_y]->getType() != rook)
-        if (board[0][start_y]->getColour() != player_turn)
+    // King side castle
+    if (delta_x == 2) {
+        if (board[8][start_y] == nullptr)
             return false;
-
-    if (board[8][start_y]->getType() != rook)
+        
+        if (board[8][start_y]->getType() != rook)
+            return false;
+    
         if (board[8][start_y]->getColour() != player_turn)
+            return false;    
+
+        if (board[8][start_y]->hasMoved()) {
+            cerr << "Cannot perform king's side castle because " << player_turn << "'s rook has previously moved.\n";
+            return true;
+        }
+
+        if (board[start_x][start_y]->hasMoved()) {
+            cerr << "Cannot perform king's side castle because " << player_turn << "'s King has previously moved.\n";
+            return true;
+        }
+
+        if (isInCheck(player_turn)) {
+            cerr << "Cannot perform king's side castle because " << player_turn << " is in check.\n";
+        }
+
+
+    }
+   
+    // Queen side castle castle
+    if (delta_x == -2) {
+        if (board[8][start_y] == nullptr)
             return false;
-
-    if (board[end_x][end_y] == nullptr)
-        return false;
-
-    if (board[start_x][start_y]->hasMoved() || board[end_x][end_y]->hasMoved())
-        return false;
-
-    if (isInCheck(player_turn))
-        return false;
+        
+        if (board[8][start_y]->getType() != rook)
+            return false;
     
-    return true;
+        if (board[8][start_y]->getColour() != player_turn)
+            return false;    
+
+        if(board[8][start_y]->hasMoved()) {
+            cerr << "Cannot perform king's side castle because " << player_turn << "'s rook has previously moved.\n";
+            return true;
+        }
+
+        if(board[8][start_y]->hasMoved()) {
+            cerr << "Cannot perform king's side castle because " << player_turn << "'s King has previously moved.\n";
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 

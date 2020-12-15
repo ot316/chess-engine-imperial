@@ -1,6 +1,5 @@
 #include "Piece.hpp"
 #include "Queen.hpp"
-#include<iostream>
 
 Queen::Queen(Colour colour) : Piece(colour) {
     type = queen;
@@ -17,7 +16,6 @@ int Queen::legalPieceMovement(const char* start_pos, const char* end_pos, Piece*
 }
 
 bool Queen::legalLineOfSight(const char* start_pos, const char* end_pos, Piece* board[][8]) const {
-    // Check for horizontal line of sight.
     auto start_x = start_pos[0] - 'A';
     auto start_y = start_pos[1] - '1';
     auto end_x = end_pos[0] - 'A';
@@ -25,7 +23,9 @@ bool Queen::legalLineOfSight(const char* start_pos, const char* end_pos, Piece* 
     auto delta_x = end_x - start_x;
     auto delta_y = end_y - start_y;
 
+    // Check for horizontal line of sight.
     auto increment = ((end_x > start_x || end_y > start_y) ? 1 : -1);
+    
     if (!delta_x) 
         for (auto i = start_y + increment; i != end_y; i += increment)
             if (board[start_x][i] != nullptr)

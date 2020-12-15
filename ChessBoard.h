@@ -20,8 +20,10 @@ class ChessBoard {
         
         Piece* board[8][8];
 
+        // Used to keep track of the kings.
         char king_position[2][3];
 
+        // Used to check if either king is in check.
         bool in_check[2] = {false, false};
 
         // Used to keep track if a player has previously been in check for the purpose of castling.
@@ -60,8 +62,10 @@ class ChessBoard {
         // Moves a piece from the start position to the end position.
         void submitMove(const char* start_pos, const char* end_pos);
 
+        // Checks if the player is in check, target is the king's position.
         bool isInCheck(Colour current_player, const char* target);
 
+        // Checks if the player has any legal moves remaining.
         bool hasLegalMoves(Colour player);
 
         // Discards the current game and resets the board.

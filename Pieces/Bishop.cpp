@@ -25,6 +25,7 @@ bool Bishop::legalLineOfSight(const char* start_pos, const char* end_pos, Piece*
     auto delta_x = end_x - start_x;
     auto delta_y = end_y - start_y;
 
+    // inverse multiplier to iterate over squares in different directions depending on movement direction.
 	auto multiplier = ((delta_x < 0 && delta_y < 0) || (delta_x > 0 && delta_y > 0) ? 1 : -1);
     
 	if (delta_x < 0) 

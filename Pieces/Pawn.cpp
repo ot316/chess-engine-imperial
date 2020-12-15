@@ -1,6 +1,5 @@
 #include "Piece.hpp"
 #include "Pawn.hpp"
-#include <iostream>
 
 Pawn::Pawn(Colour colour) : Piece(colour) {
     type = pawn;

@@ -4,14 +4,17 @@ ChessBoard::ChessBoard() {
     configureBoard();
 }
 
+
 ChessBoard::~ChessBoard() {
     clearBoard();
 }
+
 
 void ChessBoard::resetBoard() {
     clearBoard();
     configureBoard();
 }
+
 
 void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     using std::cerr;
@@ -379,7 +382,6 @@ bool ChessBoard::castling(const char* start_pos, const char* end_pos) {
         cerr << "Castling is illegal because " << print_colour[player_turn] << " has previously been in check.\n";
         return true;
     }
-        // std::cout << start_x << start_y << rook_start_x << increment << std::endl;
     
     for (int i = start_x + increment; i != rook_start_x; i += increment) {
         if (board[i][start_y] != nullptr) {

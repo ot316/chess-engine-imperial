@@ -34,7 +34,8 @@ int Piece::isLegalMove(const char* start_pos, const char* end_pos, Piece* board[
     }
 
     /* Check the piece can move to the end position given its individual rules of movement,
-    and check that there are no pieces obstructing the movement, should the piece require this. */
+    and check that there are no pieces obstructing the movement, should the piece require this. 
+    e.g. knights and kings do not need to check line of sight. */
     int error_code = this->legalPieceMovement(start_pos, end_pos, board);
     if (error_code)
         return error_code;
@@ -43,7 +44,7 @@ int Piece::isLegalMove(const char* start_pos, const char* end_pos, Piece* board[
 }
 
 
-// Shared movement primitive legalator functions
+// All below functions are shared movement validator functions.
 bool Piece::onDiagonal(const char* start_pos, const char* end_pos) const {
     auto delta_x = abs(end_pos[0] - start_pos[0]);
     auto delta_y = abs(end_pos[1] - start_pos[1]);

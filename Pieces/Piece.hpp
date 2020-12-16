@@ -9,6 +9,8 @@ const char print_colour[][6] = {"White", "Black"};
 
 enum Type {null, pawn, knight, bishop, rook, queen, king};
 const char print_type[][7] = {"Error", "Pawn", "Knight", "Bishop", "Rook", "Queen", "King"};
+const char print_unicode_symbol_white[][7] = {"  ", "♙", "♘", "♙", "♖", "♕", "♔"};
+const char print_unicode_symbol_black[][7] = {"  ", "♟︎", "♞", "♝", "♜", "♛", "♚"};
 
 class Piece {
 

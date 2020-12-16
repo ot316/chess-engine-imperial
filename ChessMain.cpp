@@ -54,6 +54,7 @@ int main() {
 
 	cb.submitMove("C1", "A3");
 	cb.submitMove("B8", "D7");
+
 	cout << '\n';
 
 	cb.submitMove("D1", "E2");

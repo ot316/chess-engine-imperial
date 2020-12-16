@@ -1,4 +1,5 @@
 #include "ChessBoard.h"
+#include <unistd.h>
 
 ChessBoard::ChessBoard() {
     configureBoard();
@@ -19,6 +20,11 @@ void ChessBoard::resetBoard() {
 void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     using std::cerr;
     using std::cout;
+
+    int n;
+    for (n = 0; n < 10; n++)
+    printf( "\n\n\n\n\n\n\n\n\n\n\t" );
+
 
     Colour other_player_turn = player_turn;
     toggle(other_player_turn);
@@ -45,26 +51,26 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     switch (error_code) {
         case WRONG_TURN :
             cerr << "Cannot move piece, it's not " << print_colour[board[file][rank]->getColour()];
-            cerr << "'s turn.\n";
+            cerr << "'s turn.\n\t";
             return;
         case SAME_START_AND_END_SQUARE :
             cerr << "The start square " << start_pos; 
-            cerr << " is the same as the end square " << end_pos << ".\n";
+            cerr << " is the same as the end square " << end_pos << ".\n\t";
             return;
         case OCCUPIED_SQUARE :
-            cerr << end_pos << " is occupied by a friendly piece.\n";
+            cerr << end_pos << " is occupied by a friendly piece.\n\t";
             return;
         case INVALID_MOVEMENT :
             cerr << print_colour[board[file][rank]->getColour()];
             cerr << "'s " << print_type[board[file][rank]->getType()];
             cerr << " cannot move from " << start_pos << " to ";
-            cerr << end_pos << ".\n";
+            cerr << end_pos << ".\n\t";
             return;
         case NO_LINE_OF_SIGHT :
             cerr << print_colour[board[file][rank]->getColour()];
             cerr << "'s " << print_type[board[file][rank]->getType()];
             cerr << " cannot move from " << start_pos << " to ";
-            cerr << end_pos << " as there is a piece in the way.\n";
+            cerr << end_pos << " as there is a piece in the way.\n\t";
             return;
     }
     
@@ -74,7 +80,7 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
             cerr << "Moving " << print_colour[player_turn];
             cerr << "'s " << print_type[board[file][rank]->getType()];
             cerr << " from " << start_pos << " to " << end_pos;
-            cerr << " is illegal because " << print_colour[player_turn] << " is in check.\n";
+            cerr << " is illegal because " << print_colour[player_turn] << " is in check.\n\t";
 
         }
         else {
@@ -82,7 +88,7 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
             cerr << "'s " << print_type[board[file][rank]->getType()];
             cerr << " from " << start_pos << " to " << end_pos;
             cerr << " would expose " << print_colour[board[file][rank]->getColour()];
-            cerr << "'s King to check.\n";
+            cerr << "'s King to check.\n\t";
         }
         return;
 
@@ -107,11 +113,11 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
         cout << " taking ";
         cout << print_colour[board[end_x][end_y]->getColour()];
         cout << "'s " << print_type[board[end_x][end_y]->getType()];
-        cout << ".\n";
+        cout << ".\n\t";
         delete board[end_x][end_y];
     }
     else
-        cout << ".\n";
+        cout << ".\n\t";
 
     if (board[start_x][start_y]->getType() == pawn)     // Check if a pawn has reached the opposite edge of the board.
         if (end_y == 7 || end_y == 0)
@@ -133,9 +139,10 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     toggle(player_turn);
     outcome = checkGameOutcome();
     if (outcome == in_play && in_check[other_player_turn])
-        cout << ".\n";
+        cout << ".\n\t";
 
-    //displayBoard();
+    cout << "\n\n\t";
+    displayBoard();
 }
 
 
@@ -173,7 +180,7 @@ bool ChessBoard::movingIntoCheck(const char* start_pos, const char* end_pos) {
 
 
 void ChessBoard::configureBoard() {
-    std::cout << "A new chess game is started!\n";
+    std::cout << "A new chess game is started!\n\t";
 
     // Initilise board pointers to nullptr
     for (auto rank = 2u; rank < 6; ++rank) {
@@ -222,7 +229,7 @@ bool ChessBoard::checkInput(const char* start_pos, const char* end_pos) {
             start_pos[0] > 'H' ||
             start_pos[1] < '1' ||
             start_pos[1] > '8') {
-                cerr << start_pos << " is in an illegal starting coordinate.\n";
+                cerr << start_pos << " is in an illegal starting coordinate.\n\t";
                 return false;
     }
     if (strlen(end_pos) != 2 ||
@@ -230,13 +237,13 @@ bool ChessBoard::checkInput(const char* start_pos, const char* end_pos) {
             end_pos[0] > 'H' ||
             end_pos[1] < '1' ||
             end_pos[1] > '8') {
-            cerr << end_pos << " is in an illegal end coordinate.\n";
+            cerr << end_pos << " is in an illegal end coordinate.\n\t";
             return false;
     }
     const auto file = start_pos[0] - 'A';
     const auto rank = start_pos[1] - '1';
     if (board[file][rank] == nullptr) {
-        cerr << "The starting position " << start_pos << " does not contain a piece.\n";
+        cerr << "The starting position " << start_pos << " does not contain a piece.\n\t";
         return false;
     }
     return true;
@@ -245,26 +252,41 @@ bool ChessBoard::checkInput(const char* start_pos, const char* end_pos) {
 
 void ChessBoard::displayBoard() const {
     using namespace std;
-
-    for (auto i = 0u; i < 185; i++)
-        cout << "_";
-    cout << "\n\n\n";
+    cout << "┌";
+    for (auto i = 0u; i < 30; i++)
+        cout << "—";
 
     for (auto rank = 7; rank >= 0; --rank) {
+        if (rank == 7)
+            cout << "┐\n\t|";
+        //cout << "|";
         for (auto file = 0u; file < 8; ++file) {
             if (board[file][rank] == nullptr) 
-                cout << "\t\t|\t";
+                cout << "  | ";
             else {
                 Piece* piece = board[file][rank];
-                cout << print_colour[piece->getColour()] << " ";
-                cout << print_type[piece->getType()] << "\t|\t";
+                if (piece->getColour() == white)
+                    cout << print_unicode_symbol_white[piece->getType()];
+                else if (piece->getColour() == black)
+                    cout << print_unicode_symbol_black[piece->getType()];
+                else cout << "  ";
+                cout << " | ";
             }
         }
-        cout << "\n\n";
-        for (auto i = 0u; i < 185; i++)
-            cout << "_";
-        cout << "\n\n\n";
+        if (rank == 0)
+            cout << "\n\t└";
+        else
+            cout << "\n\t|";
+        for (auto i = 0u; i < 30; i++)
+            cout << 
+            "—";
+        if (rank != 0)
+            cout << "|\n\t|";
+        else 
+            cout << "┘";
     }
+    cout << endl << endl << endl;
+    sleep(1);
 }
 
 
@@ -364,28 +386,28 @@ bool ChessBoard::castling(const char* start_pos, const char* end_pos) {
         return false; 
 
     if (board[rook_start_x][start_y]->hasMoved()) {
-        cerr << "Castling is illegal because " << player_turn << "'s rook has previously moved.\n";
+        cerr << "Castling is illegal because " << player_turn << "'s rook has previously moved.\n\t";
         return true;
     }
 
     if (board[start_x][start_y]->hasMoved()) {
-        cerr << "castling is illegal because " << print_colour[player_turn] << "'s King has previously moved.\n";
+        cerr << "castling is illegal because " << print_colour[player_turn] << "'s King has previously moved.\n\t";
         return true;
     }
 
     if (isInCheck(player_turn, king_position[player_turn])) {
-        cerr << "Castling is illegal because " << print_colour[player_turn] << " is in check.\n";
+        cerr << "Castling is illegal because " << print_colour[player_turn] << " is in check.\n\t";
         return true;
     }
 
     if (has_been_in_check[player_turn]) {
-        cerr << "Castling is illegal because " << print_colour[player_turn] << " has previously been in check.\n";
+        cerr << "Castling is illegal because " << print_colour[player_turn] << " has previously been in check.\n\t";
         return true;
     }
     
     for (int i = start_x + increment; i != rook_start_x; i += increment) {
         if (board[i][start_y] != nullptr) {
-            cerr << "Castling is illegal as there is a piece in the way.\n";
+            cerr << "Castling is illegal as there is a piece in the way.\n\t";
             return true;
         }
     }
@@ -395,7 +417,7 @@ bool ChessBoard::castling(const char* start_pos, const char* end_pos) {
     for (auto i = start_pos[0]; i != (rook_start_x + 'A'); i += increment) {
         test_pos[0] = i;
         if (isInCheck(player_turn, test_pos)) {
-            cerr << "Castling is illegal as the king would move through check.\n";
+            cerr << "Castling is illegal as the king would move through check.\n\t";
             return true;
         }
     }
@@ -412,7 +434,7 @@ bool ChessBoard::castling(const char* start_pos, const char* end_pos) {
     cout << print_colour[player_turn] << " performs a ";
     if (increment == -1) cout << "queen";
     else cout << "king";
-    cout << " side castle.\n";
+    cout << " side castle.\n\t";
 
     return true;
 }
@@ -423,7 +445,7 @@ void ChessBoard::promotePawn(const char* pawn_pos) {
     auto start_y = pawn_pos[1] - '1';
     delete board[start_x][start_y];
     board[start_x][start_y] = new Queen(player_turn);
-    std::cout << print_colour[player_turn] << "'s pawn has been promoted to a queen.\n";
+    std::cout << print_colour[player_turn] << "'s pawn has been promoted to a queen.\n\t";
 }
 
 
@@ -431,13 +453,13 @@ Outcome ChessBoard::checkGameOutcome() {
     using std::cout;
     if (in_check[player_turn]) {
         if (!hasLegalMoves(player_turn)) {
-            cout << "mate.\n";
+            cout << "mate.\n\t";
             return (player_turn == white) ? white_wins : black_wins;
         }
     }
     else {
         if (!hasLegalMoves(player_turn)) {
-            cout << "Game ends in stalemate.\n";
+            cout << "Game ends in stalemate.\n\t";
             return stalemate;
         }
     }

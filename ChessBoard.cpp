@@ -223,7 +223,7 @@ bool ChessBoard::checkInput(const char* start_pos, const char* end_pos) {
             start_pos[0] > 'H' ||
             start_pos[1] < '1' ||
             start_pos[1] > '8') {
-                cerr << start_pos << " is in an illegal starting coordinate.\n\n\t";
+                cerr << start_pos << " is in an illegal starting coordinate.\n\n\n\t";
                 return false;
     }
     if (strlen(end_pos) != 2 ||
@@ -231,13 +231,13 @@ bool ChessBoard::checkInput(const char* start_pos, const char* end_pos) {
             end_pos[0] > 'H' ||
             end_pos[1] < '1' ||
             end_pos[1] > '8') {
-            cerr << end_pos << " is in an illegal end coordinate.\n\n\t";
+            cerr << end_pos << " is in an illegal end coordinate.\n\n\n\t";
             return false;
     }
     const auto file = start_pos[0] - 'A';
     const auto rank = start_pos[1] - '1';
     if (board[file][rank] == nullptr) {
-        cerr << "The starting position " << start_pos << " does not contain a piece.\n\n\t";
+        cerr << "The starting position " << start_pos << " does not contain a piece.\n\n\n\t";
         return false;
     }
     return true;

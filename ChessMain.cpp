@@ -6,9 +6,6 @@ using std::cout;
 using std::cin;
 
 int main() {
-
-
-
 	ChessBoard cb;
 	cout << "\n\t";
 	char end_pos_[4], start_pos_[4], start_pos[4], end_pos[2];

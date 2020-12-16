@@ -3,6 +3,6 @@ A CLI chess game that allows 2 players to play a game of chess and have it visua
 
 to complie using gcc run "make" and run the exeutable with "./chess"
 
-![output](output.png)
-![output2](output2.png)
+![output](1.png)
+![output2](2.png)
 

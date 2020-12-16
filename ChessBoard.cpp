@@ -105,7 +105,7 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
 
     // Check if an enemy piece has been taken.
     if (board[end_x][end_y] != nullptr) {
-        cout << " taking ";
+        cout << " capturing ";
         cout << print_colour[board[end_x][end_y]->getColour()];
         cout << "'s " << print_type[board[end_x][end_y]->getType()];
         cout << ".\n\n\t";

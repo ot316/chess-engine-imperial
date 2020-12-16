@@ -46,7 +46,7 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     switch (error_code) {
         case WRONG_TURN :
             cerr << "Cannot move piece, it's not " << print_colour[board[file][rank]->getColour()];
-            cerr << "'s turn.\n\t";
+            cerr << "'s turn.\n\n\t";
             return;
         case SAME_START_AND_END_SQUARE :
             cerr << "The start square " << start_pos; 

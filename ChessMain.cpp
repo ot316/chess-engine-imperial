@@ -6,32 +6,45 @@ using std::cin;
 
 int main() {
 	ChessBoard cb;
-	cout << "\n\t";
-	char end_pos_[4], start_pos_[4], start_pos[4], end_pos[2];
-	bool i = false;
+
+	char input[256], *start_pos, *end_pos;
+	bool first_move = true;
+
 	while (true) {
-		int n;
-		for (n = 0; n < 5; n++)
-			cout << "\n\n\n\n\n\n\n\n\n\n\t";
-		cout << "==================================\n\t";
-		cout << "Welcome to the Virtual Chess Board\n\t";
-		cout << "==================================\n\n\t";
-		strncpy(start_pos_, start_pos, 2);
-		strncpy(end_pos_, end_pos, 2);
-		if (i != 0) {
-			cb.submitMove(start_pos_, end_pos_);
-		    cb.displayBoard();
-		}
-		else {
-			cb.displayBoard();
+		cout << "\033[2J\033[1;1H\n\t";
+		cout << " ——————————————————————————————————\n\t";
+		cout << " Welcome to the Virtual Chess Board\n\t";
+		cout << " ——————————————————————————————————\n\n\t";
+
+		cb.displayBoard();
+
+		if (first_move)
 			cout << "\tPlease enter the coordinates of your move,\n\tfor example 'D2 D4'. white goes first.\n\n";
+			
+		first_move = false;
+
+		if (cb.inPlay())
+			cout << "\t" << ">> ";
+
+		cin.getline(input, 256);
+		start_pos = strtok (input, " ,.-");
+		end_pos = strtok (NULL, " ,.-");
+
+		if (start_pos != nullptr) {
+			if (!strcmp(start_pos, "Resign") || !strcmp(start_pos, "resign")) {
+				cb.resign();
+				continue;
+			}
+
+			if (!strcmp(start_pos, "Reset") || !strcmp(start_pos, "reset")) {
+				cb.resetBoard();
+				first_move = true;
+				continue;
+			}
+			if (end_pos != nullptr)	
+				cb.submitMove(start_pos, end_pos);
+			}
 		}
-		i = true;
-		cout << "\t";
-		cin >> start_pos;
-		cin >> end_pos;
-		cout << "\n\t";
-	}
 
 	return 0;
 }

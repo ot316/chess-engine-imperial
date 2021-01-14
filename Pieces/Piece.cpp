@@ -8,12 +8,12 @@ Piece::~Piece(){}
 
 
 const Colour Piece::getColour() const {
-    return colour;
+    return this->colour;
 }
 
 
 const Type Piece::getType() const {
-    return type;
+    return this->type;
 }
 
 

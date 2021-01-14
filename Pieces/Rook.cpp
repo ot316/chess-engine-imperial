@@ -2,7 +2,7 @@
 #include "Rook.hpp"
 
 Rook::Rook(Colour colour) : Piece(colour) {
-    type = rook;
+    this->type = rook;
 }
 
 

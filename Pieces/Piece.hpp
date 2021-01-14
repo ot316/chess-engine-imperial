@@ -2,12 +2,14 @@
 #include "../errors.hpp"
 #include <cstring>
 #include <cmath>
+#include <unordered_map>
 
 // Used to improve readability and to print types and colours to the terminal.
 enum Colour {white, black};
 const char print_colour[][6] = {"White", "Black"};
 
 enum Type {null, pawn, knight, bishop, rook, queen, king};
+
 const char print_type[][7] = {"Error", "Pawn", "Knight", "Bishop", "Rook", "Queen", "King"};
 const char print_unicode_symbol_black[][7] = {"  ", "♙", "♘", "♗", "♖", "♕", "♔"};
 const char print_unicode_symbol_white[][7] = {"  ", "♟︎", "♞", "♝", "♜", "♛", "♚"};

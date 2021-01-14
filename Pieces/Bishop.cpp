@@ -2,7 +2,7 @@
 #include "Bishop.hpp"
 
 Bishop::Bishop(Colour colour) : Piece(colour) {
-    type = bishop;
+    this->type = bishop;
 }
 
 

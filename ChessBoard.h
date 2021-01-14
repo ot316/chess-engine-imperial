@@ -7,6 +7,8 @@
 #include "Pieces/Queen.hpp"
 #include "Pieces/King.hpp"
 #include <iostream>
+#include <string>
+#include <vector>
 
 enum Outcome {in_play, white_wins, black_wins, stalemate};
 
@@ -20,14 +22,26 @@ class ChessBoard {
         
         Piece* board[8][8];
 
+        int white_time_left;
+
+        int black_time_left;
+
+        std::vector<Type> white_taken;
+
+        int white_material_val = 0;
+
+        std::vector<Type> black_taken;
+
+        int black_material_val = 0;
+
+        std::string output_status = "";
+
+
         // Used to keep track of the kings.
         char king_position[2][3];
 
         // Used to check if either king is in check.
         bool in_check[2] = {false, false};
-
-        // Used to keep track if a player has previously been in check for the purpose of castling.
-        bool has_been_in_check[2] = {false, false};
 
         // Sets up the chess board ready for a new game.
         void configureBoard();
@@ -61,6 +75,12 @@ class ChessBoard {
 
         // Moves a piece from the start position to the end position.
         void submitMove(const char* start_pos, const char* end_pos);
+
+        // game is resigned.
+        void resign();
+
+        // Check if game is in play
+        bool inPlay();
 
         // Checks if the player is in check, target is the king's position.
         bool isInCheck(Colour current_player, const char* target);

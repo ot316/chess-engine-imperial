@@ -2,7 +2,7 @@
 #include "King.hpp"
 
 King::King(Colour colour) : Piece(colour) {
-    type = king;
+    this->type = king;
 }
 
 

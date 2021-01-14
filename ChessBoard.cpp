@@ -1,5 +1,9 @@
 #include "ChessBoard.h"
 #include <unistd.h>
+#include <algorithm>
+
+// mapping for piece values
+std::unordered_map<Type, int> piece_values({{pawn, 1}, {knight, 3}, {bishop, 3}, {rook, 5}, {queen, 9}});
 
 ChessBoard::ChessBoard() {
     configureBoard();
@@ -17,19 +21,43 @@ void ChessBoard::resetBoard() {
 }
 
 
+void ChessBoard::resign() {
+    // Check which player resigns
+    if (player_turn == white) {
+        output_status = "White has resigned, Black wins.\n\n\t";
+        outcome = black_wins; 
+        return;
+    }
+        
+    else {
+        output_status = "Black has resigned, White wins.\n\n\t";
+        outcome = white_wins;
+        return;
+    }
+}
+
+bool ChessBoard::inPlay() {
+    return outcome ? false : true;
+}
+
+
 void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     using std::cerr;
     using std::cout;
 
+    output_status.clear();
+
     Colour other_player_turn = player_turn;
     toggle(other_player_turn);
 
-    if(!checkInput(start_pos, end_pos)) {
+    // check game is ongoing
+    if(outcome != in_play) {
+        output_status = "The current game has ended, please reset the board.\n\n\t";
         return;
     }
 
-    if(outcome != in_play) {
-        cerr << "The current game has ended, please reset the board.\n";
+    // check input is valid
+    if(!checkInput(start_pos, end_pos)) {
         return;
     }
 
@@ -45,45 +73,65 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
 
     switch (error_code) {
         case WRONG_TURN :
-            cerr << "Cannot move piece, it's not " << print_colour[board[file][rank]->getColour()];
-            cerr << "'s turn.\n\n\t";
+            output_status += "Cannot move piece, it's not " + std::string(print_colour[board[file][rank]->getColour()]);
+            output_status += "'s turn.\n\n";
             return;
         case SAME_START_AND_END_SQUARE :
-            cerr << "The start square " << start_pos; 
-            cerr << " is the same as the end square " << end_pos << ".\n\n\t";
+            output_status += "The start square ";
+            output_status += start_pos; 
+            output_status += " is the same as the end square ";
+            output_status += end_pos;
+            output_status += ".\n\n";
             return;
         case OCCUPIED_SQUARE :
-            cerr << end_pos << " is occupied by a friendly piece.\n\n\n\t";
+            output_status += end_pos;
+            output_status += " is occupied by a friendly piece.\n\n\n";
             return;
         case INVALID_MOVEMENT :
-            cerr << print_colour[board[file][rank]->getColour()];
-            cerr << "'s " << print_type[board[file][rank]->getType()];
-            cerr << " cannot move from " << start_pos << " to ";
-            cerr << end_pos << ".\n\n\t";
+            output_status += print_colour[board[file][rank]->getColour()];
+            output_status += "'s " + std::string(print_type[board[file][rank]->getType()]);
+            output_status += " cannot move from ";
+            output_status += start_pos;
+            output_status += " to ";
+            output_status += end_pos;
+            output_status += ".\n\n";
             return;
         case NO_LINE_OF_SIGHT :
-            cerr << print_colour[board[file][rank]->getColour()];
-            cerr << "'s " << print_type[board[file][rank]->getType()];
-            cerr << " cannot move from " << start_pos << " to ";
-            cerr << end_pos << " as there is a piece in the way.\n\n\t";
+            output_status += print_colour[board[file][rank]->getColour()];
+            output_status += "'s " + std::string(print_type[board[file][rank]->getType()]);
+            output_status += " cannot move from " ;
+            output_status += start_pos;
+            output_status += " to ";
+            output_status += end_pos;
+            output_status += " as there is a piece in the way.\n\n";
             return;
     }
     
     // Check if the move results in the mover's king being in check.
     if (movingIntoCheck(start_pos, end_pos) == MOVING_INTO_CHECK) {
         if (in_check[player_turn]) {
-            cerr << "Moving " << print_colour[player_turn];
-            cerr << "'s " << print_type[board[file][rank]->getType()];
-            cerr << " from " << start_pos << " to " << end_pos;
-            cerr << " is illegal because " << print_colour[player_turn] << " is in check.\n\n\t";
+            output_status += "Moving ";
+            output_status += print_colour[player_turn];
+            output_status += "'s ";
+            output_status += print_type[board[file][rank]->getType()];
+            output_status += " from ";
+            output_status += start_pos;
+            output_status += " to ";
+            output_status += end_pos;
+            output_status += " is illegal because " + std::string(print_colour[player_turn]);
+            output_status += " is in check.\n\n";
 
         }
         else {
-            cerr << "Moving " << print_colour[board[file][rank]->getColour()];
-            cerr << "'s " << print_type[board[file][rank]->getType()];
-            cerr << " from " << start_pos << " to " << end_pos;
-            cerr << " would expose " << print_colour[board[file][rank]->getColour()];
-            cerr << "'s King to check.\n\n\t";
+            output_status += "Moving " + std::string(print_colour[board[file][rank]->getColour()]);
+            output_status += "'s " + std::string(print_type[board[file][rank]->getType()]);
+            output_status += " from ";
+            output_status += start_pos;
+            output_status += " to ";
+            output_status += end_pos;
+            output_status += " would expose ";
+            output_status += print_colour[board[file][rank]->getColour()];
+            output_status += "'s King to check.\n\n";
         }
         return;
 
@@ -94,9 +142,12 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     const auto end_x = end_pos[0] - 'A';
     const auto end_y = end_pos[1] - '1';
 
-    cout << print_colour[board[file][rank]->getColour()];
-    cout << "'s " << print_type[board[file][rank]->getType()];
-    cout << " moves from " << start_pos << " to " << end_pos;
+    output_status += print_colour[board[file][rank]->getColour()];
+    output_status += "'s " + std::string(print_type[board[file][rank]->getType()]);
+    output_status += " moves from ";
+    output_status += start_pos;
+    output_status += " to ";
+    output_status += end_pos;
 
     board[start_x][start_y]->moved();    // Used to keep track of the movement of pawns and kings.
 
@@ -105,14 +156,32 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
 
     // Check if an enemy piece has been taken.
     if (board[end_x][end_y] != nullptr) {
-        cout << " capturing ";
-        cout << print_colour[board[end_x][end_y]->getColour()];
-        cout << "'s " << print_type[board[end_x][end_y]->getType()];
-        cout << ".\n\n\t";
+
+        // Add taken pieces to taken arrays
+        if (player_turn == white) {
+            black_taken.push_back(board[end_x][end_y]->getType());
+            black_material_val += piece_values.find(black_taken.back())->second;
+        }
+        else {
+            white_taken.push_back(board[end_x][end_y]->getType());
+            white_material_val += piece_values.find(white_taken.back())->second;
+        }
+        
+        // sort taken arrays
+        std::sort(black_taken.begin(), black_taken.end());
+        std::sort(white_taken.begin(), white_taken.end());
+
+        output_status += " capturing ";
+        output_status += print_colour[board[end_x][end_y]->getColour()];
+        output_status += "'s " + std::string(print_type[board[end_x][end_y]->getType()]);
+        output_status += ".\n";
+
+        // deallocate taken piece    
         delete board[end_x][end_y];
     }
+
     else
-        cout << ".\n\t";
+        output_status += ".\n";
 
     if (board[start_x][start_y]->getType() == pawn)     // Check if a pawn has reached the opposite edge of the board.
         if (end_y == 7 || end_y == 0)
@@ -125,8 +194,8 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
 
     if (isInCheck(other_player_turn, king_position[other_player_turn])) {
         in_check[other_player_turn] = true;
-        has_been_in_check[other_player_turn] = true;
-        cout << print_colour[other_player_turn] << " is in check";
+        output_status += "\t" + std::string(print_colour[other_player_turn]);
+        output_status += " is in check";
     }
     else 
         in_check[other_player_turn] = false;
@@ -134,9 +203,9 @@ void ChessBoard::submitMove(const char* start_pos, const char* end_pos) {
     toggle(player_turn);
     outcome = checkGameOutcome();
     if (outcome == in_play && in_check[other_player_turn])
-        cout << ".\n\n\t";
+        output_status += ".\n";
 
-    cout << "\n\n\t";
+    output_status += "\n";
 }
 
 
@@ -174,7 +243,7 @@ bool ChessBoard::movingIntoCheck(const char* start_pos, const char* end_pos) {
 
 
 void ChessBoard::configureBoard() {
-    std::cout << "\t\tA new chess game is started!\n\t";
+    output_status = "A new chess game is started!\n";
 
     // Initilise board pointers to nullptr
     for (auto rank = 2u; rank < 6; ++rank) {
@@ -210,20 +279,20 @@ void ChessBoard::configureBoard() {
 
     player_turn = white;
     outcome = in_play;
-    has_been_in_check[white] = false;
-    has_been_in_check[black] = false;
 }
 
 
 bool ChessBoard::checkInput(const char* start_pos, const char* end_pos) {
     // Check Coordinates are within range
     using std::cerr;
+
     if (strlen(start_pos) != 2 ||
             start_pos[0] < 'A' ||
             start_pos[0] > 'H' ||
             start_pos[1] < '1' ||
             start_pos[1] > '8') {
-                cerr << start_pos << " is in an illegal starting coordinate.\n\n\n\t";
+                output_status += start_pos;
+                output_status += " is in an illegal starting coordinate.\n\n";
                 return false;
     }
     if (strlen(end_pos) != 2 ||
@@ -231,13 +300,16 @@ bool ChessBoard::checkInput(const char* start_pos, const char* end_pos) {
             end_pos[0] > 'H' ||
             end_pos[1] < '1' ||
             end_pos[1] > '8') {
-            cerr << end_pos << " is in an illegal end coordinate.\n\n\n\t";
+            output_status += end_pos;
+            output_status += " is in an illegal end coordinate.\n\n";
             return false;
     }
     const auto file = start_pos[0] - 'A';
     const auto rank = start_pos[1] - '1';
     if (board[file][rank] == nullptr) {
-        cerr << "The starting position " << start_pos << " does not contain a piece.\n\n\n\t";
+        output_status += "The starting position ";
+        output_status += start_pos;
+        output_status += " does not contain a piece.\n\n";
         return false;
     }
     return true;
@@ -245,15 +317,28 @@ bool ChessBoard::checkInput(const char* start_pos, const char* end_pos) {
 
 
 void ChessBoard::displayBoard() const {
+    // Displays a unicode chess board as well as material advantage.
     using namespace std;
     cout << "  ┌";
-    for (auto i = 0u; i < 30; i++)
-        cout << "—";
+    for (auto i = 0u; i < 31; i++)
+        cout <<  "—";
 
     for (auto rank = 7; rank >= 0; --rank) {
-        if (rank == 7)
-            cout << "┐\n\t";
-        cout << rank+1 << " |";
+
+        if (rank == 7) {
+            cout << "┐\t";
+
+            for(auto i = 0U; i < white_taken.size(); i++)
+                cout << print_unicode_symbol_white[white_taken[i]] << " ";
+
+            if (white_material_val > black_material_val)
+                cout << " +" << white_material_val - black_material_val;
+
+            cout << "\n\t";
+        }   
+        cout <<rank+1 << " | ";
+
+
         for (auto file = 0u; file < 8; ++file) {
             if (board[file][rank] == nullptr) 
                 cout << "  | ";
@@ -267,19 +352,28 @@ void ChessBoard::displayBoard() const {
                 cout << " | ";
             }
         }
+
         if (rank == 0)
-            cout << "\n\t  └";
+            cout <<"\n\t  └";
         else
             cout << "\n\t  |";
-        for (auto i = 0u; i < 30; i++)
-            cout << 
-            "—";
+        for (auto i = 0u; i < 31; i++)
+            cout << "—";
         if (rank != 0)
             cout << "|\n\t";
         else 
-            cout << "┘";
+            cout << "┘\t";
     }
+
+    for(auto i = 0U; i < black_taken.size(); i++)
+        cout << print_unicode_symbol_black[black_taken[i]] << " ";
+
+    if (black_material_val > white_material_val)
+        cout << " +" << black_material_val - white_material_val;
+
     cout << endl << "\t    A   B   C   D   E   F   G   H" << endl << endl;
+
+    cout << "\t" << output_status;
 }
 
 
@@ -305,12 +399,10 @@ bool ChessBoard::isInCheck(Colour current_player, const char* target) {
 
 
 void ChessBoard::clearBoard() {
-    for (auto rank = 0u; rank < 8; ++rank) {
-        for (auto file = 0u; file < 8; ++file) {
+    for (auto rank = 0u; rank < 8; ++rank) 
+        for (auto file = 0u; file < 8; ++file)
             if (board[file][rank] != nullptr)
                 delete board[file][rank];
-        }
-    }
 }
 
 
@@ -379,28 +471,29 @@ bool ChessBoard::castling(const char* start_pos, const char* end_pos) {
         return false; 
 
     if (board[rook_start_x][start_y]->hasMoved()) {
-        cerr << "Castling is illegal because " << player_turn << "'s rook has previously moved.\n\n\t";
+        output_status += "Castling is illegal because ";
+        output_status += player_turn;
+        output_status += "'s rook has previously moved.\n\n";
         return true;
     }
 
     if (board[start_x][start_y]->hasMoved()) {
-        cerr << "castling is illegal because " << print_colour[player_turn] << "'s King has previously moved.\n\n\t";
+        output_status += "castling is illegal because ";
+        output_status += std::string(print_colour[player_turn]);
+        output_status += "'s King has previously moved.\n\n";
         return true;
     }
 
     if (isInCheck(player_turn, king_position[player_turn])) {
-        cerr << "Castling is illegal because " << print_colour[player_turn] << " is in check.\n\n\t";
-        return true;
-    }
-
-    if (has_been_in_check[player_turn]) {
-        cerr << "Castling is illegal because " << print_colour[player_turn] << " has previously been in check.\n\n\t";
+        output_status += "Castling is illegal because ";
+        output_status += std::string(print_colour[player_turn]);
+        output_status += " is in check.\n\n";
         return true;
     }
     
     for (int i = start_x + increment; i != rook_start_x; i += increment) {
         if (board[i][start_y] != nullptr) {
-            cerr << "Castling is illegal as there is a piece in the way.\n\n\t";
+            output_status += "Castling is illegal as there is a piece in the way.\n\n";
             return true;
         }
     }
@@ -410,7 +503,7 @@ bool ChessBoard::castling(const char* start_pos, const char* end_pos) {
     for (auto i = start_pos[0]; i != (rook_start_x + 'A'); i += increment) {
         test_pos[0] = i;
         if (isInCheck(player_turn, test_pos)) {
-            cerr << "Castling is illegal as the king would move through check.\n\n\t";
+            output_status += "Castling is illegal as the king would move through check.\n\n";
             return true;
         }
     }
@@ -424,10 +517,11 @@ bool ChessBoard::castling(const char* start_pos, const char* end_pos) {
     board[rook_start_x][start_y] = nullptr;
 
 
-    cout << print_colour[player_turn] << " performs a ";
-    if (increment == -1) cout << "queen";
-    else cout << "king";
-    cout << " side castle.\n\n\t";
+    output_status += std::string(print_colour[player_turn]);
+    output_status += " performs a ";
+    if (increment == -1) output_status += "queen";
+    else output_status += "king";
+    output_status += " side castle.\n\n";
 
     return true;
 }
@@ -438,7 +532,8 @@ void ChessBoard::promotePawn(const char* pawn_pos) {
     auto start_y = pawn_pos[1] - '1';
     delete board[start_x][start_y];
     board[start_x][start_y] = new Queen(player_turn);
-    std::cout << print_colour[player_turn] << "'s pawn has been promoted to a queen.\n\n\t";
+    output_status += "\t" + std::string(print_colour[player_turn]);
+    output_status += "'s pawn has been promoted to a queen.\n\n";
 }
 
 
@@ -446,13 +541,13 @@ Outcome ChessBoard::checkGameOutcome() {
     using std::cout;
     if (in_check[player_turn]) {
         if (!hasLegalMoves(player_turn)) {
-            cout << "mate.\n\t";
+            output_status += "mate.\n";
             return (player_turn == white) ? white_wins : black_wins;
         }
     }
     else {
         if (!hasLegalMoves(player_turn)) {
-            cout << "Game ends in stalemate.\n\t";
+            output_status += "Game ends in stalemate.\n";
             return stalemate;
         }
     }

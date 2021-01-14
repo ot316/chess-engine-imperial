@@ -2,7 +2,7 @@
 #include "Pawn.hpp"
 
 Pawn::Pawn(Colour colour) : Piece(colour) {
-    type = pawn;
+    this->type = pawn;
 }
 
 int Pawn::legalPieceMovement(const char* start_pos, const char* end_pos, Piece* board[][8]) const {
